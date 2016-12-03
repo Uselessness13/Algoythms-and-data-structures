@@ -63,6 +63,16 @@ namespace Шашечки.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap belaya_damka {
+            get {
+                object obj = ResourceManager.GetObject("belaya_damka", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap black_bg {
             get {
                 object obj = ResourceManager.GetObject("black-bg", resourceCulture);
@@ -86,6 +96,16 @@ namespace Шашечки.Properties {
         internal static System.Drawing.Bitmap black_highlited {
             get {
                 object obj = ResourceManager.GetObject("black_highlited", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sinyaya_damka {
+            get {
+                object obj = ResourceManager.GetObject("sinyaya_damka", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

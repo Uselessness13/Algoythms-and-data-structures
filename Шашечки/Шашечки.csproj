@@ -106,6 +106,8 @@
     <None Include="black_checker.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="sinyaya_damka.png" />
+    <None Include="belaya_damka.png" />
     <Content Include="black_highlited.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
