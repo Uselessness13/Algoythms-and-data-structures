@@ -37,6 +37,10 @@
             this.whitesh = new System.Windows.Forms.PictureBox();
             this.startNewGame = new System.Windows.Forms.Button();
             this.playersname = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.blackScore = new System.Windows.Forms.Label();
+            this.whiteScore = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.whiteQueen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.blackQueen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.highlight)).BeginInit();
@@ -46,10 +50,10 @@
             // 
             // history
             // 
-            this.history.Location = new System.Drawing.Point(429, 30);
+            this.history.Location = new System.Drawing.Point(429, 84);
             this.history.Name = "history";
             this.history.ReadOnly = true;
-            this.history.Size = new System.Drawing.Size(150, 355);
+            this.history.Size = new System.Drawing.Size(150, 301);
             this.history.TabIndex = 0;
             this.history.Text = "";
             // 
@@ -125,11 +129,53 @@
             this.playersname.Size = new System.Drawing.Size(142, 20);
             this.playersname.TabIndex = 7;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(429, 27);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(55, 20);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "White";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.Location = new System.Drawing.Point(519, 27);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(53, 20);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "Black";
+            // 
+            // blackScore
+            // 
+            this.blackScore.AutoSize = true;
+            this.blackScore.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.blackScore.Location = new System.Drawing.Point(546, 61);
+            this.blackScore.Name = "blackScore";
+            this.blackScore.Size = new System.Drawing.Size(0, 20);
+            this.blackScore.TabIndex = 11;
+            // 
+            // whiteScore
+            // 
+            this.whiteScore.AutoSize = true;
+            this.whiteScore.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.whiteScore.Location = new System.Drawing.Point(450, 61);
+            this.whiteScore.Name = "whiteScore";
+            this.whiteScore.Size = new System.Drawing.Size(0, 20);
+            this.whiteScore.TabIndex = 10;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 421);
+            this.Controls.Add(this.blackScore);
+            this.Controls.Add(this.whiteScore);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.playersname);
             this.Controls.Add(this.startNewGame);
             this.Controls.Add(this.whiteQueen);
@@ -162,6 +208,10 @@
         private System.Windows.Forms.PictureBox blackQueen;
         private System.Windows.Forms.Button startNewGame;
         private System.Windows.Forms.TextBox playersname;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label blackScore;
+        private System.Windows.Forms.Label whiteScore;
     }
 }
 
