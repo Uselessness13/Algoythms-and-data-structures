@@ -470,10 +470,10 @@ namespace Шашечки
 
         public void whiteQueenHighlither(int x, int y)
         {
-            MessageBox.Show("highlighter");
+            //MessageBox.Show("highlighter");
             int ulx = x;
             int uly = y;
-            while (ulx > 0 && uly > 0)
+            while (ulx >= 0 && uly >= 0)
             {
                 if (board[ulx, uly].Image == null)
                 {
@@ -481,10 +481,13 @@ namespace Шашечки
                 }
                 else
                 {
-                    if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image) break;
+                    if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image)
+                    {
+                        if (uly != y && ulx != x) break;
+                    }
                     if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image)
                     {
-                        if (ulx > 1 && uly > 1)
+                        if (ulx >= 1 && uly >= 1)
                         {
                             if (board[ulx - 1, uly - 1].Image == null)
                             {
@@ -497,7 +500,7 @@ namespace Шашечки
             }
             int urx = x;
             int ury = y;
-            while (urx > 0 && ury < 7)
+            while (urx >= 0 && ury <= 7)
             {
                 if (board[urx, ury].Image == null)
                 {
@@ -505,10 +508,13 @@ namespace Шашечки
                 }
                 else
                 {
-                    if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image) break;
+                    if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
+                    {
+                        if (ury != y && urx != x) break;
+                    }
                     if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
                     {
-                        if (urx > 1 && ury < 6)
+                        if (urx >= 1 && ury <= 6)
                         {
                             if (board[urx - 1, ury + 1].Image == null)
                             {
@@ -521,8 +527,8 @@ namespace Шашечки
             }
 
             int dlx = x;
-            int dly = 3;
-            while (dlx < 7 && dly > 0)
+            int dly = y;
+            while (dlx <= 7 && dly >= 0)
             {
                 if (board[dlx, dly].Image == null)
                 {
@@ -530,15 +536,17 @@ namespace Шашечки
                 }
                 else
                 {
-                    if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image) break;
+                    if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
+                    {
+                        if (dly != y && dlx != x) break;
+                    }
                     if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image)
                     {
-                        if (dlx < 6 && dly > 1)
+                        if (dlx <= 6 && dly >= 1)
                         {
                             if (board[dlx + 1, dly - 1].Image == null)
                             {
                                 board[dlx + 1, dly - 1].BackgroundImage = highlight.Image;
-                                MessageBox.Show("highlighterld");
                             }
                         }
                     }
@@ -547,7 +555,7 @@ namespace Шашечки
             }
             int drx = x;
             int dry = y;
-            while (drx < 7 && dry < 7)
+            while (drx <= 7 && dry <= 7)
             {
                 if (board[drx, dry].Image == null)
                 {
@@ -555,10 +563,13 @@ namespace Шашечки
                 }
                 else
                 {
-                    if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image) break;
+                    if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
+                    {
+                        if (dry != y && drx != x) break;
+                    }
                     if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
                     {
-                        if (drx < 6 && dry < 6)
+                        if (drx <= 6 && dry <= 6)
                         {
                             if (board[drx + 1, dry + 1].Image == null)
                             {
@@ -576,15 +587,18 @@ namespace Шашечки
             bool answer = false;
             int ulx = x, uly = y;
             bool ulanswer = false;
-            while (ulx > 0 && uly > 0)
+            while (ulx >= 0 && uly >= 0)
             {
                 if (board[ulx, uly].Image == null) { }
                 else
                 {
-                    if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image) break;
+                    if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image)
+                    {
+                        if (uly != y && ulx != x) break;
+                    }
                     if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image)
                     {
-                        if (ulx > 1 && uly > 1)
+                        if (ulx >= 1 && uly >= 1)
                         {
                             if (board[ulx - 1, uly - 1].Image == null)
                             {
@@ -598,15 +612,18 @@ namespace Шашечки
             }
             int urx = x, ury = y;
             bool uranswer = false;
-            while (urx > 0 && ury < 7)
+            while (urx >= 0 && ury <= 7)
             {
                 if (board[urx, ury].Image == null){}
                 else
                 {
-                    if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image) break;
+                    if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
+                    {
+                        if (ury != y && urx != x) break;
+                    }
                     if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
                     {
-                        if (urx > 1 && ury < 6)
+                        if (urx >= 1 && ury <= 6)
                         {
                             if (board[urx - 1, ury + 1].Image == null)
                             {
@@ -621,15 +638,18 @@ namespace Шашечки
 
             int dlx = x, dly = y;
             bool dlanswer = false;
-            while (dlx < 7 && dly > 0)
+            while (dlx <= 7 && dly >= 0)
             {
                 if (board[dlx, dly].Image == null){}
                 else
                 {
-                    if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image) break;
+                    if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
+                    {
+                        if (dly != y && dlx != x) break;
+                    }
                     if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image)
                     {
-                        if (dlx < 6 && dly > 1)
+                        if (dlx <= 6 && dly >= 1)
                         {
                             if (board[dlx + 1, dly - 1].Image == null)
                             {
@@ -643,15 +663,18 @@ namespace Шашечки
             }
             int drx = x, dry = y;
             bool dranswer = false;
-            while (drx < 7 && dry < 7)
+            while (drx <= 7 && dry <= 7)
             {
                 if (board[drx, dry].Image == null){}
                 else
                 {
-                    if (board[drx, uly].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image) break;
-                    if (board[drx, uly].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
+                    if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
                     {
-                        if (drx < 6 && dry < 6)
+                        if (dry != y && drx != x) break;
+                    }
+                    if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
+                    {
+                        if (drx <= 6 && dry <= 6)
                         {
                             if (board[drx + 1, dry + 1].Image == null)
                             {
@@ -980,7 +1003,7 @@ namespace Шашечки
             int ulx, uly;
             ulx = x;
             uly = y;
-            while (ulx > 0 && uly > 0)
+            while (ulx >= 0 && uly >= 0)
             {
                 if (board[ulx, uly].Image == null)
                 {
@@ -988,14 +1011,15 @@ namespace Шашечки
                 }
                 else
                 {
-                    if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image) break;
+                    if ((board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image) && (ulx!=x&&uly!=y)) break;
                     if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image)
                     {
-                        if (ulx > 1 && uly > 1)
+                        if (ulx >= 1 && uly >= 1)
                         {
                             if (board[ulx - 1, uly - 1].Image == null)
                             {
                                 board[ulx - 1, uly - 1].BackgroundImage = highlight.Image;
+                                break;
                             }
                         }
                     }
@@ -1005,7 +1029,7 @@ namespace Шашечки
             int urx, ury;
             urx = x;
             ury = y;
-            while (urx > 0 && ury < 7)
+            while (urx >= 0 && ury <= 7)
             {
                 if (board[urx, ury].Image == null)
                 {
@@ -1013,14 +1037,15 @@ namespace Шашечки
                 }
                 else
                 {
-                    if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image) break;
+                    if ((board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)&& (urx !=x && ury != y)) break;
                     if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
                     {
-                        if (urx > 1 && ury < 6)
+                        if (urx >= 1 && ury <= 6)
                         {
                             if (board[urx - 1, ury + 1].Image == null)
                             {
                                 board[urx - 1, ury + 1].BackgroundImage = highlight.Image;
+                                break;
                             }
                         }
                     }
@@ -1031,7 +1056,7 @@ namespace Шашечки
             int dlx, dly;
             dlx = x;
             dly = y;
-            while (dlx < 7 && dly > 0)
+            while (dlx <= 7 && dly >= 0)
             {
                 if (board[dlx, dly].Image == null)
                 {
@@ -1039,14 +1064,15 @@ namespace Шашечки
                 }
                 else
                 {
-                    if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image) break;
+                    if ((board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image) && (dlx !=x && dly !=y)) break;
                     if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
                     {
-                        if (dlx < 6 && dly > 1)
+                        if (dlx <= 6 && dly >= 1)
                         {
                             if (board[dlx + 1, dly - 1].Image == null)
                             {
                                 board[dlx + 1, dly - 1].BackgroundImage = highlight.Image;
+                                break;
                             }
                         }
                     }
@@ -1054,7 +1080,7 @@ namespace Шашечки
                 dlx++; dly--;
             }
             int drx = x, dry = y;
-            while (drx < 7 && dry < 7)
+            while (drx <= 7 && dry <= 7)
             {
                 if (board[drx, dry].Image == null)
                 {
@@ -1062,14 +1088,15 @@ namespace Шашечки
                 }
                 else
                 {
-                    if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image) break;
+                    if ((board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image) && (drx!= x && dry!= y)) break;
                     if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
                     {
-                        if (drx < 6 && dry < 6)
+                        if (drx <= 6 && dry <= 6)
                         {
                             if (board[drx + 1, dry + 1].Image == null)
                             {
                                 board[drx + 1, dry + 1].BackgroundImage = highlight.Image;
+                                break;
                             }
                         }
                     }
@@ -1083,20 +1110,25 @@ namespace Шашечки
             bool answer = false;
             int ulx = x, uly = y;
             bool ulanswer = false;
-            while (ulx > 0 && uly > 0)
+            while (ulx >= 0 && uly >= 0)
             {
                 if (board[ulx, uly].Image == null) { }
                 else
                 {
-                    if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image) break;
+                    if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image)
+                    {
+                        if (uly != y && ulx != x) break;
+                    }
+                        
                     if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image)
                     {
-                        if (ulx > 1 && uly > 1)
+                        if (ulx >= 1 && uly >= 1)
                         {
                             if (board[ulx - 1, uly - 1].Image == null)
                             {
                                 board[ulx - 1, uly - 1].BackgroundImage = highlight.Image;
                                 ulanswer = true;
+                                break;
                             }
                         }
                     }
@@ -1105,20 +1137,24 @@ namespace Шашечки
             }
             int urx = x, ury = y;
             bool uranswer = false;
-            while (urx > 0 && ury < 7)
+            while (urx >= 0 && ury <= 7)
             {
                 if (board[urx, ury].Image == null) { }
                 else
                 {
-                    if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image) break;
+                    if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
+                    {
+                        if (ury != y && urx != x) break;
+                    }
                     if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
                     {
-                        if (urx > 1 && ury < 6)
+                        if (urx >= 1 && ury <= 6)
                         {
                             if (board[urx - 1, ury + 1].Image == null)
                             {
                                 board[urx - 1, ury + 1].BackgroundImage = highlight.Image;
                                 uranswer = true;
+                                break;
                             }
                         }
                     }
@@ -1128,20 +1164,24 @@ namespace Шашечки
 
             int dlx = x, dly = y;
             bool dlanswer = false;
-            while (dlx < 7 && dly > 0)
+            while (dlx <= 7 && dly >= 0)
             {
                 if (board[dlx, dly].Image == null) { }
                 else
                 {
-                    if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image) break;
+                    if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image)
+                    {
+                        if (dly != y && dlx != x) break;
+                    }
                     if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
                     {
-                        if (dlx < 6 && dly > 1)
+                        if (dlx <= 6 && dly >= 1)
                         {
                             if (board[dlx + 1, dly - 1].Image == null)
                             {
                                 board[dlx + 1, dly - 1].BackgroundImage = highlight.Image;
                                 dlanswer = true;
+                                break;
                             }
                         }
                     }
@@ -1150,20 +1190,24 @@ namespace Шашечки
             }
             int drx = x, dry = y;
             bool dranswer = false;
-            while (drx < 7 && dry < 7)
+            while (drx <= 7 && dry <= 7)
             {
                 if (board[drx, dry].Image == null) { }
                 else
                 {
-                    if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image) break;
+                    if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
+                    {
+                        if (dry != y && drx != x) break;
+                    }
                     if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
                     {
-                        if (drx < 6 && dry < 6)
+                        if (drx <= 6 && dry <= 6)
                         {
                             if (board[drx + 1, dry + 1].Image == null)
                             {
                                 board[drx + 1, dry + 1].BackgroundImage = highlight.Image;
                                 dranswer = true;
+                                break;
                             }
                         }
                     }
