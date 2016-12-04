@@ -377,7 +377,7 @@ namespace Шашечки
                     board[x - 2, y + 2].BackgroundImage = highlight.Image;
                 }
             }
-            if ( x <= 6 && y >= 6)
+            if ( x >= 6 && y >= 6)
             {
                 if ((board[x - 1, y - 1].Image == blacksh.Image | board[x - 1, y - 1].Image == blackQueen.Image) && board[x - 2, y - 2].Image == null)
                 {
@@ -492,6 +492,7 @@ namespace Шашечки
                             if (board[ulx - 1, uly - 1].Image == null)
                             {
                                 board[ulx - 1, uly - 1].BackgroundImage = highlight.Image;
+                                break;
                             }
                         }
                     }
@@ -519,6 +520,7 @@ namespace Шашечки
                             if (board[urx - 1, ury + 1].Image == null)
                             {
                                 board[urx - 1, ury + 1].BackgroundImage = highlight.Image;
+                                break;
                             }
                         }
                     }
@@ -547,6 +549,7 @@ namespace Шашечки
                             if (board[dlx + 1, dly - 1].Image == null)
                             {
                                 board[dlx + 1, dly - 1].BackgroundImage = highlight.Image;
+                                break;
                             }
                         }
                     }
@@ -574,6 +577,7 @@ namespace Шашечки
                             if (board[drx + 1, dry + 1].Image == null)
                             {
                                 board[drx + 1, dry + 1].BackgroundImage = highlight.Image;
+                                break;
                             }
                         }
                     }
@@ -604,6 +608,7 @@ namespace Шашечки
                             {
                                 board[ulx - 1, uly - 1].BackgroundImage = highlight.Image;
                                 ulanswer = true;
+                                break;
                             }
                         }
                     }
@@ -629,6 +634,7 @@ namespace Шашечки
                             {
                                 board[urx - 1, ury + 1].BackgroundImage = highlight.Image;
                                 uranswer = true;
+                                break;
                             }
                         }
                     }
@@ -655,6 +661,7 @@ namespace Шашечки
                             {
                                 board[dlx + 1, dly - 1].BackgroundImage = highlight.Image;
                                 dlanswer = true;
+                                break;
                             }
                         }
                     }
@@ -680,6 +687,7 @@ namespace Шашечки
                             {
                                 board[drx + 1, dry + 1].BackgroundImage = highlight.Image;
                                 dranswer = true;
+                                break;
                             }
                         }
                     }
