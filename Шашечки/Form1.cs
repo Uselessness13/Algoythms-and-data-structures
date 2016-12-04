@@ -102,11 +102,13 @@ namespace Шашечки
             int x = ((Cursor.Position.Y - this.DesktopLocation.Y) / 50) - 1;
             y = y > 7 ? 7 : y < 0 ? 0 : y;
             x = x > 7 ? 7 : x < 0 ? 0 : x;
-            MessageBox.Show(x.ToString() + " " + y.ToString());
+            //MessageBox.Show(x.ToString() + " " + y.ToString());
             whiteScore.Text = whiteAte.ToString();
             blackScore.Text = blackAte.ToString();
-            if (board[x, y].Image == whitesh.Image | board[x, y].Image == blacksh.Image | board[x, y].Image == blackQueen.Image | board[x, y].Image == blackQueen.Image)
+            if (board[x, y].Image == whitesh.Image | board[x, y].Image == blacksh.Image | board[x, y].Image == whiteQueen.Image | board[x, y].Image == blackQueen.Image)
             {
+                whiteScore.Text = whiteAte.ToString();
+                blackScore.Text = blackAte.ToString();
                 player = numberOfStep % 2 != 0 ? "white" : "black";
                 playersname.Text = player + " turn";
 
@@ -115,12 +117,17 @@ namespace Шашечки
                     cleaner();
                     current = new int[] { x, y };
                     whiteHighlighter(x, y);
+                    whiteScore.Text = whiteAte.ToString();
+                    blackScore.Text = blackAte.ToString();
                 }
                 if (player == "white" && board[x, y].Image == whiteQueen.Image)
                 {
+                    MessageBox.Show("BlackQueen");
                     cleaner();
                     current = new int[] { x, y };
                     whiteQueenHighlither(x, y);
+                    whiteScore.Text = whiteAte.ToString();
+                    blackScore.Text = blackAte.ToString();
                 }
 
                 if (player == "black" && board[x,y].Image == blacksh.Image)
@@ -128,12 +135,16 @@ namespace Шашечки
                     cleaner();
                     current = new int[] { x, y };
                     blackHighlighter(x, y);
+                    whiteScore.Text = whiteAte.ToString();
+                    blackScore.Text = blackAte.ToString();
                 }
                 if (player == "black" && board[x, y].Image == blackQueen.Image)
                 {
                     cleaner();
                     current = new int[] { x, y };
                     blackQueenHighlither(x, y);
+                    whiteScore.Text = whiteAte.ToString();
+                    blackScore.Text = blackAte.ToString();
                 }
             }
 
@@ -141,6 +152,8 @@ namespace Шашечки
             {
                 if (board[current[0],current[1]].Image == whitesh.Image)
                 {
+                    whiteScore.Text = whiteAte.ToString();
+                    blackScore.Text = blackAte.ToString();
                     cleaner();
                     whiteStepper(current[0], current[1], x, y);
                     if (whiteEatChecker(x, y) && Math.Abs(current[0] - x) >= 2)
@@ -150,12 +163,16 @@ namespace Шашечки
                     else
                     {
                         cleaner();
-                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString();
+                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString()+"\n";
                         numberOfStep++;
+                        player = numberOfStep % 2 != 0 ? "white" : "black";
+                        playersname.Text = player + " turn";
                     }
                 }
                 if (board[current[0], current[1]].Image == whiteQueen.Image)
                 {
+                    whiteScore.Text = whiteAte.ToString();
+                    blackScore.Text = blackAte.ToString();
                     cleaner();
                     whiteQueenStepper(current[0], current[1], x, y);
                     if (whiteQueenEatChecker(x, y))
@@ -165,12 +182,16 @@ namespace Шашечки
                     else
                     {
                         cleaner();
-                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString();
+                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
                         numberOfStep++;
+                        player = numberOfStep % 2 != 0 ? "white" : "black";
+                        playersname.Text = player + " turn";
                     }
                 }
                 if (board[current[0],current[1]].Image == blacksh.Image)
                 {
+                    whiteScore.Text = whiteAte.ToString();
+                    blackScore.Text = blackAte.ToString();
                     cleaner();
                     blackStepper(current[0], current[1], x, y);
                     if (blackEatChecker(x, y) && Math.Abs(current[0] - x) >= 2)
@@ -180,12 +201,16 @@ namespace Шашечки
                     else
                     {
                         cleaner();
-                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString();
+                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
                         numberOfStep++;
+                        player = numberOfStep % 2 != 0 ? "white" : "black";
+                        playersname.Text = player + " turn";
                     }
                 }
                 if (board[current[0], current[1]].Image == blackQueen.Image)
                 {
+                    whiteScore.Text = whiteAte.ToString();
+                    blackScore.Text = blackAte.ToString();
                     cleaner();
                     blackQueenStepper(current[0], current[1], x, y);
                     if (blackQueenEatChecker(x, y))
@@ -194,8 +219,11 @@ namespace Шашечки
                     }
                     else
                     {
-                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString();
+                        cleaner();
+                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
                         numberOfStep++;
+                        player = numberOfStep % 2 != 0 ? "white" : "black";
+                        playersname.Text = player + " turn";
                     }
                 }
             }
@@ -240,11 +268,7 @@ namespace Шашечки
                 }
 
             }
-            if (y > 0 && y < 7 && x > 0 && x < 7)
-            {
-
-            }
-            if (y == 0 && x > 1 && board[x - 1, y + 1].Image == null)
+            if (y == 0 && x >= 1 && board[x - 1, y + 1].Image == null)
             {
                 board[x - 1, y + 1].BackgroundImage = highlight.Image;
             }
@@ -306,6 +330,24 @@ namespace Шашечки
                     board[x + 2, y - 2].BackgroundImage = highlight.Image;
                 }
             }
+            if (y >= 6 && x > 1)
+            {
+                if ((board[x - 1, y - 1].Image == blacksh.Image | board[x - 1, y - 1].Image == blackQueen.Image) && board[x - 2, y - 2].Image == null)
+                {
+                    board[x - 2, y - 2].BackgroundImage = highlight.Image;
+                }
+            }
+            if (y <= 1 && x < 6 && x > 1)
+            {
+                if ((board[x - 1, y + 1].Image == blacksh.Image | board[x - 1, y + 1].Image == blackQueen.Image) && board[x - 2, y + 2].Image == null)
+                {
+                    board[x - 2, y + 2].BackgroundImage = highlight.Image;
+                }
+                if ((board[x + 1, y + 1].Image == blacksh.Image | board[x + 1, y + 1].Image == blackQueen.Image) && board[x + 2, y + 2].Image == null)
+                {
+                    board[x + 2, y + 2].BackgroundImage = highlight.Image;
+                }
+            }
             if (x <= 1 && y > 1 && y < 6)
             {
                 if ((board[x + 1, y - 1].Image == blacksh.Image | board[x + 1, y - 1].Image == blackQueen.Image) && board[x + 2, y - 2].Image == null)
@@ -328,14 +370,14 @@ namespace Шашечки
                     board[x - 2, y + 2].BackgroundImage = highlight.Image;
                 }
             }
-            if (x == 7 && y == 0)
+            if (x >= 6 && y <= 1)
             {
                 if ((board[x - 1, y + 1].Image == blacksh.Image | board[x - 1, y + 1].Image == blackQueen.Image) && board[x - 2, y + 2].Image == null)
                 {
                     board[x - 2, y + 2].BackgroundImage = highlight.Image;
                 }
             }
-            if ( x == 7 && y == 7)
+            if ( x <= 6 && y >= 6)
             {
                 if ((board[x - 1, y - 1].Image == blacksh.Image | board[x - 1, y - 1].Image == blackQueen.Image) && board[x - 2, y - 2].Image == null)
                 {
@@ -428,7 +470,9 @@ namespace Шашечки
 
         public void whiteQueenHighlither(int x, int y)
         {
-            int ulx = x, uly = y;
+            MessageBox.Show("highlighter");
+            int ulx = x;
+            int uly = y;
             while (ulx > 0 && uly > 0)
             {
                 if (board[ulx, uly].Image == null)
@@ -451,7 +495,8 @@ namespace Шашечки
                 }
                 ulx--; uly--;
             }
-            int urx = x, ury = y;
+            int urx = x;
+            int ury = y;
             while (urx > 0 && ury < 7)
             {
                 if (board[urx, ury].Image == null)
@@ -475,7 +520,8 @@ namespace Шашечки
                 urx--; ury++;
             }
 
-            int dlx = x, dly = y;
+            int dlx = x;
+            int dly = 3;
             while (dlx < 7 && dly > 0)
             {
                 if (board[dlx, dly].Image == null)
@@ -492,13 +538,15 @@ namespace Шашечки
                             if (board[dlx + 1, dly - 1].Image == null)
                             {
                                 board[dlx + 1, dly - 1].BackgroundImage = highlight.Image;
+                                MessageBox.Show("highlighterld");
                             }
                         }
                     }
                 }
                 dlx++; dly--;
             }
-            int drx = x, dry = y;
+            int drx = x;
+            int dry = y;
             while (drx < 7 && dry < 7)
             {
                 if (board[drx, dry].Image == null)
@@ -723,19 +771,19 @@ namespace Шашечки
                 }
 
             }
-            if (y == 0 && x < 6 && board[x - 1, y + 1].Image == null)
+            if (y == 0 && x < 6 && board[x + 1, y + 1].Image == null)
             {
                 board[x + 1, y + 1].BackgroundImage = highlight.Image;
             }
-            else if ((y == 0 && x < 6) && (board[x + 1, y + 1].Image == whitesh.Image | board[x - 1, y + 1].Image == whiteQueen.Image))
+            else if ((y == 0 && x < 6) && (board[x + 1, y + 1].Image == whitesh.Image | board[x + 1, y + 1].Image == whiteQueen.Image))
             {
                 blackEater(x, y);
             }
-            if (y == 7 && x < 6 && board[x + 1, y - 1].Image == null)
+            if (y == 7 && x <= 6 && board[x + 1, y - 1].Image == null)
             {
                 board[x + 1, y - 1].BackgroundImage = highlight.Image;
             }
-            else if ((y == 7 && x < 6) && (board[x + 1, y - 1].Image == whitesh.Image | board[x + 1, y - 1].Image == whiteQueen.Image))
+            else if ((y == 7 && x <= 6) && (board[x + 1, y - 1].Image == whitesh.Image | board[x + 1, y - 1].Image == whiteQueen.Image))
             {
                 blackEater(x, y);
             }
@@ -774,6 +822,14 @@ namespace Шашечки
                     board[x + 2, y + 2].BackgroundImage = highlight.Image;
                 }
             }
+
+            if (x == 1 && y <= 1)
+            {
+                if ((board[x + 1, y + 1].Image == whitesh.Image | board[x + 1, y + 1].Image == whiteQueen.Image) && board[x + 2, y + 2].Image == null)
+                {
+                    board[x + 2, y + 2].BackgroundImage = highlight.Image;
+                }
+            }
             if (x > 1 && x < 6 && y >= 6)
             {
                 if ((board[x - 1, y - 1].Image == whitesh.Image | board[x - 1, y - 1].Image == whiteQueen.Image) && board[x - 2, y - 2].Image == null)
@@ -796,7 +852,7 @@ namespace Шашечки
                     board[x + 2, y + 2].BackgroundImage = highlight.Image;
                 }
             }
-            if (x == 0 && y == 7)
+            if (x <= 1 && y >= 6)
             {
                 if ((board[x + 1, y - 1].Image == whitesh.Image | board[x + 1, y - 1].Image == whiteQueen.Image) && board[x + 2, y - 2].Image == null)
                 {
@@ -817,7 +873,7 @@ namespace Шашечки
                     board[x - 2, y + 2].BackgroundImage = highlight.Image;
                 }
             }
-            if (x==7 && y == 7)
+            if (x>=6 && y >= 7)
             {
                 if ((board[x - 1, y - 1].Image == whitesh.Image | board[x - 1, y - 1].Image == whiteQueen.Image) && board[x - 2, y - 2].Image == null)
                 {
@@ -828,7 +884,7 @@ namespace Шашечки
             {
                 if ((board[x - 1, y - 1].Image == whitesh.Image | board[x - 1, y - 1].Image == whiteQueen.Image) && board[x - 2, y - 2].Image == null)
                 {
-                    board[x + 2, y - 2].BackgroundImage = highlight.Image;
+                    board[x - 2, y - 2].BackgroundImage = highlight.Image;
                 }
                 if ((board[x - 1, y + 1].Image == whitesh.Image | board[x - 1, y + 1].Image == whiteQueen.Image) && board[x - 2, y + 2].Image == null)
                 {
@@ -921,7 +977,9 @@ namespace Шашечки
 
         public void blackQueenHighlither(int x, int y)
         {
-            int ulx = x, uly = y;
+            int ulx, uly;
+            ulx = x;
+            uly = y;
             while (ulx > 0 && uly > 0)
             {
                 if (board[ulx, uly].Image == null)
@@ -944,7 +1002,9 @@ namespace Шашечки
                 }
                 ulx--; uly--;
             }
-            int urx = x, ury = y;
+            int urx, ury;
+            urx = x;
+            ury = y;
             while (urx > 0 && ury < 7)
             {
                 if (board[urx, ury].Image == null)
@@ -968,7 +1028,9 @@ namespace Шашечки
                 urx--; ury++;
             }
 
-            int dlx = x, dly = y;
+            int dlx, dly;
+            dlx = x;
+            dly = y;
             while (dlx < 7 && dly > 0)
             {
                 if (board[dlx, dly].Image == null)
@@ -1151,6 +1213,8 @@ namespace Шашечки
             }
             if (xk == 7) board[xk, yk].Image = blackQueen.Image;
             else board[xk, yk].Image = blacksh.Image;
+            whiteScore.Text = whiteAte.ToString();
+            blackScore.Text = blackAte.ToString();
         }
 
         public void blackQueenStepper(int xn, int yn, int xk, int yk)
@@ -1190,6 +1254,8 @@ namespace Шашечки
                 }
             }
             board[xk, yk].Image = blackQueen.Image;
+            whiteScore.Text = whiteAte.ToString();
+            blackScore.Text = blackAte.ToString();
         }
 
         public void cleaner()
@@ -1205,9 +1271,10 @@ namespace Шашечки
 
         public void newGame()
         {
+            player = "white";
             blackAte = 0;
             whiteAte = 0;
-            numberOfStep = 0;
+            numberOfStep = 1;
             cleaner();
             for (int i = 0; i < 8; i++)
             {
