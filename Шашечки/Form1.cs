@@ -18,8 +18,10 @@ namespace Шашечки
         private int blackAte;
         private string player = "white";
         private Dictionary<int, string> hod;
-        public Form1()
+        private String type;
+        public Form1(String player)
         {
+            type = player;
             InitializeComponent();
         }
 
@@ -99,144 +101,495 @@ namespace Шашечки
         private int[] current;
         private void boardpart_Click(object sender, EventArgs e)
         {
-            int y = ((Cursor.Position.X + 20 - this.DesktopLocation.X) / 50) - 1;
-            int x = ((Cursor.Position.Y - this.DesktopLocation.Y) / 50) - 1;
-            y = y > 7 ? 7 : y < 0 ? 0 : y;
-            x = x > 7 ? 7 : x < 0 ? 0 : x;
-            int blsch = blackAte;
-            int whsch = whiteAte;
-            //MessageBox.Show(x.ToString() + " " + y.ToString());
-            whiteScore.Text = whiteAte.ToString();
-            blackScore.Text = blackAte.ToString();
-            if (board[x, y].Image == whitesh.Image | board[x, y].Image == blacksh.Image | board[x, y].Image == whiteQueen.Image | board[x, y].Image == blackQueen.Image)
+            if (type == "mem")
             {
+                int y = ((Cursor.Position.X + 20 - this.DesktopLocation.X) / 50) - 1;
+                int x = ((Cursor.Position.Y - this.DesktopLocation.Y) / 50) - 1;
+                y = y > 7 ? 7 : y < 0 ? 0 : y;
+                x = x > 7 ? 7 : x < 0 ? 0 : x;
+                int blsch = blackAte;
+                int whsch = whiteAte;
+                //MessageBox.Show(x.ToString() + " " + y.ToString());
                 whiteScore.Text = whiteAte.ToString();
                 blackScore.Text = blackAte.ToString();
-                player = numberOfStep % 2 != 0 ? "white" : "black";
-                playersname.Text = player + " turn";
+                if (board[x, y].Image == whitesh.Image | board[x, y].Image == blacksh.Image | board[x, y].Image == whiteQueen.Image | board[x, y].Image == blackQueen.Image)
+                {
+                    whiteScore.Text = whiteAte.ToString();
+                    blackScore.Text = blackAte.ToString();
+                    player = numberOfStep % 2 != 0 ? "white" : "black";
+                    playersname.Text = player + " turn";
 
-                if (player == "white" && board[x, y].Image == whitesh.Image)
-                {
-                    cleaner();
-                    current = new int[] { x, y };
-                    whiteHighlighter(x, y);
-                    whiteScore.Text = whiteAte.ToString();
-                    blackScore.Text = blackAte.ToString();
-                }
-                if (player == "white" && board[x, y].Image == whiteQueen.Image)
-                {
-                    cleaner();
-                    current = new int[] { x, y };
-                    whiteQueenHighlither(x, y);
-                    whiteScore.Text = whiteAte.ToString();
-                    blackScore.Text = blackAte.ToString();
+                    if (player == "white" && board[x, y].Image == whitesh.Image)
+                    {
+                        cleaner();
+                        current = new int[] { x, y };
+                        whiteHighlighter(x, y);
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                    }
+                    if (player == "white" && board[x, y].Image == whiteQueen.Image)
+                    {
+                        cleaner();
+                        current = new int[] { x, y };
+                        whiteQueenHighlither(x, y);
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                    }
+
+                    if (player == "black" && board[x, y].Image == blacksh.Image)
+                    {
+                        cleaner();
+                        current = new int[] { x, y };
+                        blackHighlighter(x, y);
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                    }
+                    if (player == "black" && board[x, y].Image == blackQueen.Image)
+                    {
+                        cleaner();
+                        current = new int[] { x, y };
+                        blackQueenHighlither(x, y);
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                    }
                 }
 
-                if (player == "black" && board[x, y].Image == blacksh.Image)
+                if (board[x, y].BackgroundImage == highlight.Image)
                 {
-                    cleaner();
-                    current = new int[] { x, y };
-                    blackHighlighter(x, y);
-                    whiteScore.Text = whiteAte.ToString();
-                    blackScore.Text = blackAte.ToString();
-                }
-                if (player == "black" && board[x, y].Image == blackQueen.Image)
-                {
-                    cleaner();
-                    current = new int[] { x, y };
-                    blackQueenHighlither(x, y);
-                    whiteScore.Text = whiteAte.ToString();
-                    blackScore.Text = blackAte.ToString();
+                    if (board[current[0], current[1]].Image == whitesh.Image)
+                    {
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                        cleaner();
+                        whiteStepper(current[0], current[1], x, y);
+                        if (whiteEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && whiteAte > whsch)
+                        {
+                            current = new int[] { x, y };
+                        }
+                        else
+                        {
+                            cleaner();
+                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            numberOfStep++;
+                            player = numberOfStep % 2 != 0 ? "white" : "black";
+                            playersname.Text = player + " turn";
+                        }
+                    }
+                    if (board[current[0], current[1]].Image == whiteQueen.Image)
+                    {
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                        cleaner();
+                        whiteQueenStepper(current[0], current[1], x, y);
+                        if (whiteQueenEatChecker(x, y) && whiteAte > whsch)
+                        {
+                            current = new int[] { x, y };
+                        }
+                        else
+                        {
+                            cleaner();
+                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            numberOfStep++;
+                            player = numberOfStep % 2 != 0 ? "white" : "black";
+                            playersname.Text = player + " turn";
+                        }
+                    }
+                    if (board[current[0], current[1]].Image == blacksh.Image)
+                    {
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                        cleaner();
+                        blackStepper(current[0], current[1], x, y);
+                        if (blackEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && blackAte > blsch)
+                        {
+                            current = new int[] { x, y };
+                        }
+                        else
+                        {
+                            cleaner();
+                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            numberOfStep++;
+                            player = numberOfStep % 2 != 0 ? "white" : "black";
+                            playersname.Text = player + " turn";
+                        }
+                    }
+                    if (board[current[0], current[1]].Image == blackQueen.Image)
+                    {
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                        cleaner();
+                        blackQueenStepper(current[0], current[1], x, y);
+                        if (blackQueenEatChecker(x, y) && blackAte > blsch)
+                        {
+                            current = new int[] { x, y };
+                        }
+                        else
+                        {
+                            cleaner();
+                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            numberOfStep++;
+                            player = numberOfStep % 2 != 0 ? "white" : "black";
+                            playersname.Text = player + " turn";
+                        }
+                    }
                 }
             }
-
-            if (board[x, y].BackgroundImage == highlight.Image)
+                
+            if (type == "mec")
             {
-                if (board[current[0], current[1]].Image == whitesh.Image)
+                int y = ((Cursor.Position.X + 20 - this.DesktopLocation.X) / 50) - 1;
+                int x = ((Cursor.Position.Y - this.DesktopLocation.Y) / 50) - 1;
+                y = y > 7 ? 7 : y < 0 ? 0 : y;
+                x = x > 7 ? 7 : x < 0 ? 0 : x;
+                int blsch = blackAte;
+                int whsch = whiteAte;
+                //MessageBox.Show(x.ToString() + " " + y.ToString());
+                whiteScore.Text = whiteAte.ToString();
+                blackScore.Text = blackAte.ToString();
+                if (board[x, y].Image == whitesh.Image | board[x, y].Image == blacksh.Image | board[x, y].Image == whiteQueen.Image | board[x, y].Image == blackQueen.Image)
                 {
                     whiteScore.Text = whiteAte.ToString();
                     blackScore.Text = blackAte.ToString();
-                    cleaner();
-                    whiteStepper(current[0], current[1], x, y);
-                    if (whiteEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && whiteAte > whsch)
-                    {
-                        current = new int[] { x, y };
-                    }
-                    else
+                    player = numberOfStep % 2 != 0 ? "white" : "black";
+                    playersname.Text = player + " turn";
+
+                    if (player == "white" && board[x, y].Image == whitesh.Image)
                     {
                         cleaner();
-                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
-                        numberOfStep++;
-                        player = numberOfStep % 2 != 0 ? "white" : "black";
-                        playersname.Text = player + " turn";
-                    }
-                }
-                if (board[current[0], current[1]].Image == whiteQueen.Image)
-                {
-                    whiteScore.Text = whiteAte.ToString();
-                    blackScore.Text = blackAte.ToString();
-                    cleaner();
-                    whiteQueenStepper(current[0], current[1], x, y);
-                    if (whiteQueenEatChecker(x, y) && whiteAte > whsch)
-                    {
                         current = new int[] { x, y };
+                        whiteHighlighter(x, y);
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
                     }
-                    else
+                    if (player == "white" && board[x, y].Image == whiteQueen.Image)
                     {
                         cleaner();
-                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
-                        numberOfStep++;
-                        player = numberOfStep % 2 != 0 ? "white" : "black";
-                        playersname.Text = player + " turn";
-                    }
-                }
-                if (board[current[0], current[1]].Image == blacksh.Image)
-                {
-                    whiteScore.Text = whiteAte.ToString();
-                    blackScore.Text = blackAte.ToString();
-                    cleaner();
-                    blackStepper(current[0], current[1], x, y);
-                    if (blackEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && blackAte > blsch)
-                    {
                         current = new int[] { x, y };
+                        whiteQueenHighlither(x, y);
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
                     }
-                    else
+
+                    if (player == "black" && board[x, y].Image == blacksh.Image)
                     {
                         cleaner();
-                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
-                        numberOfStep++;
-                        player = numberOfStep % 2 != 0 ? "white" : "black";
-                        playersname.Text = player + " turn";
-                    }
-                }
-                if (board[current[0], current[1]].Image == blackQueen.Image)
-                {
-                    whiteScore.Text = whiteAte.ToString();
-                    blackScore.Text = blackAte.ToString();
-                    cleaner();
-                    blackQueenStepper(current[0], current[1], x, y);
-                    if (blackQueenEatChecker(x, y) && blackAte > blsch)
-                    {
                         current = new int[] { x, y };
+                        blackHighlighter(x, y);
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
                     }
-                    else
+                    if (player == "black" && board[x, y].Image == blackQueen.Image)
                     {
                         cleaner();
-                        history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
-                        numberOfStep++;
-                        player = numberOfStep % 2 != 0 ? "white" : "black";
-                        playersname.Text = player + " turn";
+                        current = new int[] { x, y };
+                        blackQueenHighlither(x, y);
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
                     }
                 }
-                if (whiteAte.ToString() == "12")
+
+                if (board[x, y].BackgroundImage == highlight.Image)
                 {
-                    MessageBox.Show("White win!");
-                }
-                if (blackAte.ToString() == "12")
-                {
-                    MessageBox.Show("Black win!");
+                    if (board[current[0], current[1]].Image == whitesh.Image)
+                    {
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                        cleaner();
+                        whiteStepper(current[0], current[1], x, y);
+                        if (whiteEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && whiteAte > whsch)
+                        {
+                            current = new int[] { x, y };
+                        }
+                        else
+                        {
+                            cleaner();
+                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            numberOfStep++;
+                            player = numberOfStep % 2 != 0 ? "white" : "black";
+                            playersname.Text = player + " turn";
+                        }
+                    }
+                    if (board[current[0], current[1]].Image == whiteQueen.Image)
+                    {
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                        cleaner();
+                        whiteQueenStepper(current[0], current[1], x, y);
+                        if (whiteQueenEatChecker(x, y) && whiteAte > whsch)
+                        {
+                            current = new int[] { x, y };
+                        }
+                        else
+                        {
+                            cleaner();
+                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            numberOfStep++;
+                            player = numberOfStep % 2 != 0 ? "white" : "black";
+                            playersname.Text = player + " turn";
+                        }
+                    }
+                    if (board[current[0], current[1]].Image == blacksh.Image)
+                    {
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                        cleaner();
+                        blackStepper(current[0], current[1], x, y);
+                        if (blackEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && blackAte > blsch)
+                        {
+                            current = new int[] { x, y };
+                        }
+                        else
+                        {
+                            cleaner();
+                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            numberOfStep++;
+                            player = numberOfStep % 2 != 0 ? "white" : "black";
+                            playersname.Text = player + " turn";
+                        }
+                    }
+                    if (board[current[0], current[1]].Image == blackQueen.Image)
+                    {
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                        cleaner();
+                        blackQueenStepper(current[0], current[1], x, y);
+                        if (blackQueenEatChecker(x, y) && blackAte > blsch)
+                        {
+                            current = new int[] { x, y };
+                        }
+                        else
+                        {
+                            cleaner();
+                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            numberOfStep++;
+                            player = numberOfStep % 2 != 0 ? "white" : "black";
+                            playersname.Text = player + " turn";
+                        }
+                    }
                 }
             }
+
+            if (whiteAte.ToString() == "12")
+            {
+                MessageBox.Show("White win!");
+            }
+
+            if (blackAte.ToString() == "12")
+            {
+                MessageBox.Show("Black win!");
+            }
+        }
+        
+
+
+        public void analyser()
+        {
+            List<int[]> coords = new List<int[]>();
+            
+            for (int i = 0; i< 8; i++)
+            {
+                for (int j = 0; i < 8; i++)
+                {
+                    if (board[i, j].Image == blacksh.Image | board[i, j].Image == blackQueen.Image)
+                    {
+                        int[] cur = { i, j};
+                        coords.Add(cur);   
+                    }
+                }
+            }
+            List<int> ocenki = new List<int>();
+            for (int i = 0; i < coords.Count; i++)
+            {
+                ocenki.Add(ocenshik(coords[i][0], coords[i][1]));
+            }
+            Dictionary<int, int[]> all = new Dictionary<int, int[]>();
+            for (int i = 0; i < ocenki.Count; i++)
+            {
+                if (ocenki[i] != 0)
+                {
+                    all.Add(ocenki[i], coords[i]);
+                }
+            }
+            //all.OrderBy<>();//Как?
+
+
+        }
+
+        public int ocenshik(int x, int y)
+        {
+            int oc = 0;
+
+            if (y > 0 && y < 7 && x > 0 && x < 7)
+            {
+                if (board[x - 1, y - 1].Image == null)
+                {
+                    oc = 1;
+                }
+                if (board[x - 1, y - 1].Image == whitesh.Image | board[x - 1, y - 1].Image == whiteQueen.Image)
+                {
+                    if (checkIfCanEat(x, y))
+                    {
+                        oc = 2;
+                    }
+                }
+                if (board[x - 1, y + 1].Image == null)
+                {
+                    oc = 1;
+                }
+                if (board[x - 1, y + 1].Image == whitesh.Image | board[x - 1, y + 1].Image == whiteQueen.Image)
+                {
+                    if (checkIfCanEat(x, y))
+                    {
+                        oc = 2;
+                    }
+                }
+                if (board[x + 1, y + 1].Image == whitesh.Image | board[x + 1, y + 1].Image == whiteQueen.Image)
+                {
+                    if (checkIfCanEat(x, y))
+                    {
+                        oc = 2;
+                    }
+                }
+                if (board[x + 1, y - 1].Image == whitesh.Image | board[x + 1, y - 1].Image == whiteQueen.Image)
+                {
+                    if (checkIfCanEat(x, y))
+                    {
+                        oc = 2;
+                    }
+                }
+            }
+            if ((y <= 1 && x <= 6) && (board[x + 1, y + 1].Image == whitesh.Image | board[x + 1, y + 1].Image == whiteQueen.Image))
+            {
+                if (checkIfCanEat(x, y))
+                {
+                    oc = 2;
+                }
+            }
+            if (y <= 1 && x >= 1 && board[x - 1, y + 1].Image == null)
+            {
+                oc = 1;
+            }
+            if ((y <= 1 && x > 1) && (board[x - 1, y + 1].Image == whitesh.Image | board[x - 1, y + 1].Image == whiteQueen.Image))
+            {
+                if (checkIfCanEat(x, y))
+                {
+                    oc = 2;
+                }
+            }
+            if ((y >= 6 && x <= 6) && (board[x + 1, y - 1].Image == whitesh.Image | board[x + 1, y - 1].Image == whiteQueen.Image))
+            {
+                if (checkIfCanEat(x, y))
+                {
+                    oc = 2;
+                }
+            }
+            if (y >= 6 && x >= 1 && board[x - 1, y - 1].Image == null)
+            {
+                oc = 1;
+            }
+            if ((y >= 6 && x > 1) && (board[x - 1, y - 1].Image == whitesh.Image | board[x - 1, y - 1].Image == whiteQueen.Image))
+            {
+                if (checkIfCanEat(x, y))
+                {
+                    oc = 2;
+                }
+            }
+            if (y >= 1 && y <= 6 && x >= 6)
+            {
+                if (board[x - 1, y - 1].Image == null)
+                {
+                    oc = 1;
+                }
+                if ((board[x - 1, y - 1].Image == whitesh.Image | board[x - 1, y - 1].Image == whiteQueen.Image) && y != 1)
+                {
+                    if (checkIfCanEat(x, y))
+                    {
+                        oc = 2;
+                    }
+                }
+                if (board[x - 1, y + 1].Image == null)
+                {
+                    oc = 1;
+                }
+                if ((board[x - 1, y + 1].Image == whitesh.Image | board[x - 1, y + 1].Image == whiteQueen.Image) && y != 6)
+                {
+                    if (checkIfCanEat(x, y))
+                    {
+                        oc = 2;
+                    }
+                }
+            }
+            return oc;
+        }
+
+        public bool checkIfCanEat(int x, int y)
+        {
+            bool answer = false;
+            if (x > 1 && x < 6 && y > 1 && y < 6)
+            {
+                if ((board[x - 1, y - 1].Image == whitesh.Image | board[x - 1, y - 1].Image == whiteQueen.Image) && board[x - 2, y - 2].Image == null)
+                {
+                    answer = true;
+                }
+                if ((board[x - 1, y + 1].Image == whitesh.Image | board[x - 1, y + 1].Image == whiteQueen.Image) && board[x - 2, y + 2].Image == null)
+                {
+                    answer = true;
+                }
+
+                if ((board[x + 1, y - 1].Image == whitesh.Image | board[x + 1, y - 1].Image == whiteQueen.Image) && board[x + 2, y - 2].Image == null)
+                {
+                    answer = true;
+                }
+                if ((board[x + 1, y + 1].Image == whitesh.Image | board[x + 1, y + 1].Image == whiteQueen.Image) && board[x + 2, y + 2].Image == null)
+                {
+                    answer = true;
+                }
+            }
+            if (x > 1 && x < 6 && y <= 1)
+            {
+                if ((board[x - 1, y + 1].Image == whitesh.Image | board[x - 1, y + 1].Image == whiteQueen.Image) && board[x - 2, y + 2].Image == null)
+                {
+                    answer = true;
+                }
+                if ((board[x + 1, y + 1].Image == whitesh.Image | board[x + 1, y + 1].Image == whiteQueen.Image) && board[x + 2, y + 2].Image == null)
+                {
+                    answer = true;
+                }
+            }
+            if (x > 1 && x < 6 && y >= 6)
+            {
+                if ((board[x - 1, y - 1].Image == whitesh.Image | board[x - 1, y - 1].Image == whiteQueen.Image) && board[x - 2, y - 2].Image == null)
+                {
+                    answer = true;
+                }
+                if ((board[x + 1, y - 1].Image == whitesh.Image | board[x + 1, y - 1].Image == whiteQueen.Image) && board[x + 2, y - 2].Image == null)
+                {
+                    answer = true;
+                }
+            }
+            if (x <= 1 && y > 1 && y < 6)
+            {
+                if ((board[x + 1, y - 1].Image == whitesh.Image | board[x + 1, y - 1].Image == whiteQueen.Image) && board[x + 2, y - 2].Image == null)
+                {
+                    answer = true;
+                }
+                if ((board[x + 1, y + 1].Image == whitesh.Image | board[x + 1, y + 1].Image == whiteQueen.Image) && board[x + 2, y + 2].Image == null)
+                {
+                    answer = true;
+                }
+            }
+            if (x >= 6 && y > 1 && y < 6)
+            {
+                if ((board[x - 1, y - 1].Image == whitesh.Image | board[x - 1, y - 1].Image == whiteQueen.Image) && board[x - 2, y - 2].Image == null)
+                {
+                    answer = true;
+                }
+                if ((board[x - 1, y + 1].Image == whitesh.Image | board[x - 1, y + 1].Image == whiteQueen.Image) && board[x - 2, y + 2].Image == null)
+                {
+                    answer = true;
+                }
+            }
+            return answer;
         }
 
 
@@ -1492,10 +1845,5 @@ namespace Шашечки
         {
             newGame();
         }
-
-
-
-
-
     }
 }
