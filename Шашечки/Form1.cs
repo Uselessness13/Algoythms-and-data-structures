@@ -402,17 +402,21 @@ namespace Шашечки
             {
                 ocenki.Add(ocenshik(coords[i][0], coords[i][1]));
             }
-            Dictionary<int, int[]> all = new Dictionary<int, int[]>();
+            var all = new List<int[]>();
+            //Dictionary<int, int[]> all = new Dictionary<int, int[]>();
             for (int i = 0; i < ocenki.Count; i++)
             {
                 if (ocenki[i] != 0)
                 {
-                    all.Add(ocenki[i], coords[i]);
+                    int[] a = new int[3];
+                    a[0] = ocenki[i];
+                    a[1] = coords[i][0];
+                    a[2] = coords[i][1];
+                    all.Add(a);
                 }
             }
-            //all.OrderBy<>();//Как?
-
-
+            all.Sort();
+            
         }
 
         public int ocenshik(int x, int y)
