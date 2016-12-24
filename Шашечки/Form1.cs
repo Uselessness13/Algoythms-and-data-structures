@@ -411,7 +411,6 @@ namespace Шашечки
             for (int i = 0; i < coords.Count; i++)
             {
                 ocenki.Add(ocenshik(coords[i][0], coords[i][1]));
-                Console.WriteLine("ocenci "+i+" "+ocenki[i]);
             }
             //var all = new List<int[]>();
             //Dictionary<int, int[]> all = new Dictionary<int, int[]>();
@@ -420,6 +419,8 @@ namespace Шашечки
             {
                 if (ocenki[i] != null )
                 {
+                    Console.WriteLine("ocenci " + i + " " + ocenki[i]);
+                    Console.WriteLine(ocenki[i].ocenka + " " + ocenki[i].firstXPos + " " + ocenki[i].firstYPos + " " + ocenki[i].secondXPos + " " + ocenki[i].secondYPos);
                     all.Add(ocenki[i]);
                 }
             }
@@ -428,7 +429,7 @@ namespace Шашечки
             //Console.Write("zero" + all[0].ocenka);
             //Console.Write("last" + all[all.Count-1].ocenka);
             // КЛИК по пикчербоксу???
-            InvokeOnClick(board[all[all.Count - 1].firstXPos, all[all.Count - 1].firstYPos], new EventArgs());
+            //InvokeOnClick(board[all[all.Count - 1].firstXPos, all[all.Count - 1].firstYPos], new EventArgs());
         }
 
         public AICheckers ocenshik(int x, int y)
