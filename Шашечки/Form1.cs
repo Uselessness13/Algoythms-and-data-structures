@@ -308,6 +308,7 @@ namespace Шашечки
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
                         }
+                        analyser();
                     }
                     if (board[current[0], current[1]].Image == whiteQueen.Image)
                     {
@@ -327,6 +328,7 @@ namespace Шашечки
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
                         }
+                        analyser();
                     }
                     if (board[current[0], current[1]].Image == blacksh.Image)
                     {
@@ -392,29 +394,41 @@ namespace Шашечки
                 {
                     if (board[i, j].Image == blacksh.Image | board[i, j].Image == blackQueen.Image)
                     {
+                        //Не работает
+                        Console.WriteLine(i + "; " + j);
                         int[] cur = { i, j};
-                        coords.Add(cur);   
+                        coords.Add(cur);
+                        
                     }
                 }
+            }
+            Console.WriteLine("kolichestwo shashek " + coords.Count);
+            for (int i = 0; i < coords.Count; i++)
+            {
+                Console.WriteLine(i + " " + coords[i][0] + "; " + coords[i][1]);
             }
             List<AICheckers> ocenki = new List<AICheckers>();
             for (int i = 0; i < coords.Count; i++)
             {
                 ocenki.Add(ocenshik(coords[i][0], coords[i][1]));
+                Console.WriteLine("ocenci "+i+" "+ocenki[i]);
             }
             //var all = new List<int[]>();
             //Dictionary<int, int[]> all = new Dictionary<int, int[]>();
             List<AICheckers> all = new List<AICheckers>();
             for (int i = 0; i < ocenki.Count; i++)
             {
-                if (ocenki[i].ocenka != 0)
+                if (ocenki[i] != null )
                 {
                     all.Add(ocenki[i]);
                 }
             }
             all.Sort();
+            Console.WriteLine(all.Count);
+            //Console.Write("zero" + all[0].ocenka);
+            //Console.Write("last" + all[all.Count-1].ocenka);
             // КЛИК по пикчербоксу???
-            board[all[0].firstXPos, all[0].firstYPos].
+            InvokeOnClick(board[all[all.Count - 1].firstXPos, all[all.Count - 1].firstYPos], new EventArgs());
         }
 
         public AICheckers ocenshik(int x, int y)
