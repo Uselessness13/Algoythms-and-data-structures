@@ -387,18 +387,17 @@ namespace Шашечки
         public void analyser()
         {
             List<int[]> coords = new List<int[]>();
-            
-            for (int i = 0; i< 8; i++)
+
+            for (int i = 0; i < 8; i++)
             {
-                for (int j = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
                 {
                     if (board[i, j].Image == blacksh.Image | board[i, j].Image == blackQueen.Image)
                     {
                         //Не работает
                         Console.WriteLine(i + "; " + j);
-                        int[] cur = { i, j};
+                        int[] cur = { i, j };
                         coords.Add(cur);
-                        
                     }
                 }
             }
