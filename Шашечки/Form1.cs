@@ -169,7 +169,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
                             numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
@@ -188,7 +188,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
                             numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
@@ -207,7 +207,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
                             numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
@@ -226,7 +226,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
                             numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
@@ -303,7 +303,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
                             numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
@@ -323,7 +323,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
                             numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
@@ -343,7 +343,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
                             numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
@@ -362,7 +362,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[current[0]].ToString() + (current[1] - 1).ToString() + " -> " + hod[x].ToString() + (y - 1).ToString() + "\n";
+                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
                             numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
@@ -411,19 +411,37 @@ namespace Шашечки
             {
                 ocenki.Add(ocenshik(coords[i][0], coords[i][1]));
             }
+            Console.WriteLine("Вывод оценок " + ocenki.Count);
+            for (int i = 0; i < ocenki.Count; i++)
+            {
+                if (ocenki[i] != null)
+                    Console.WriteLine(i + " " + ocenki[i].ocenka + "; " + ocenki[i].firstXPos+"; "+ocenki[i].firstYPos + "; " + ocenki[i].secondXPos + "; " + ocenki[i].secondYPos);
+            }
             //var all = new List<int[]>();
             //Dictionary<int, int[]> all = new Dictionary<int, int[]>();
             List<AICheckers> all = new List<AICheckers>();
             for (int i = 0; i < ocenki.Count; i++)
             {
-                if (ocenki[i] != null )
+                if (ocenki[i] != null)
                 {
                     Console.WriteLine("ocenci " + i + " " + ocenki[i]);
                     Console.WriteLine(ocenki[i].ocenka + " " + ocenki[i].firstXPos + " " + ocenki[i].firstYPos + " " + ocenki[i].secondXPos + " " + ocenki[i].secondYPos);
                     all.Add(ocenki[i]);
                 }
+                else Console.WriteLine(i + " null");
             }
-            all.Sort();
+            for (int i = 0; i < all.Count; i++)
+            {
+                for (int j = 0; j < all.Count - i - 1; j++)
+                {
+                    if (all[j].ocenka > all[j + 1].ocenka)
+                    {
+                        AICheckers temp = all[j];
+                        all[j] = all[j + 1];
+                        all[j + 1] = temp;
+                    }
+                }
+            }
             Console.WriteLine(all.Count);
             //Console.Write("zero" + all[0].ocenka);
             //Console.Write("last" + all[all.Count-1].ocenka);
@@ -557,7 +575,7 @@ namespace Шашечки
             }
             if (oc == 0)
             {
-                return null;
+                return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y };
             }
             return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y};
         }
