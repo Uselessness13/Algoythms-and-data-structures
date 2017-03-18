@@ -487,6 +487,74 @@ namespace Шашечки
         {
             int oc = 0;
 
+            if (x <= 1 && y > 1 && y < 7)
+            {
+                Console.WriteLine("UP");
+                if (board[x+1, y - 1].Image == null)
+                {
+                    oc++;
+                    if (checkIfCantDie(x + 1, y - 1)) oc++;
+                    return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 };
+                }
+                else if (board[x+1, y-1].Image == whiteQueen.Image || board[x + 1, y - 1].Image == whitesh.Image)
+                {
+                    if (checkIfCanEat(x, y))
+                    {
+                        oc += checkIfCanEatAndCantDie(x,y);
+                        return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 };
+                    }
+                }
+                if (board[x + 1, y + 1].Image == null)
+                {
+                    oc++;
+                    if (checkIfCantDie(x + 1, y + 1)) oc++;
+                    return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 };
+                }
+                else if (board[x + 1, y + 1].Image == whiteQueen.Image || board[x + 1, y + 1].Image == whitesh.Image)
+                {
+                    if (checkIfCanEat(x, y))
+                    {
+                        oc += checkIfCanEatAndCantDie(x, y);
+                        return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 };
+                    }
+                }
+            }
+            if (x <= 1 && y <= 1)
+            {
+                Console.WriteLine("UP");
+                if (board[x + 1, y + 1].Image == null)
+                {
+                    oc++;
+                    if (checkIfCantDie(x + 1, y + 1)) oc++;
+                    return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 };
+                }
+                else if (board[x + 1, y + 1].Image == whiteQueen.Image || board[x + 1, y + 1].Image == whitesh.Image)
+                {
+                    if (checkIfCanEat(x, y))
+                    {
+                        oc += checkIfCanEatAndCantDie(x, y);
+                        return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 };
+                    }
+                }
+            }
+            if ( x <= 1 && y >= 6)
+            {
+                Console.WriteLine("UP");
+                if (board[x + 1, y - 1].Image == null)
+                {
+                    oc++;
+                    if (checkIfCantDie(x + 1, y - 1)) oc++;
+                    return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 };
+                }
+                else if (board[x + 1, y - 1].Image == whiteQueen.Image || board[x + 1, y - 1].Image == whitesh.Image)
+                {
+                    if (checkIfCanEat(x, y))
+                    {
+                        oc += checkIfCanEatAndCantDie(x, y);
+                        return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 };
+                    }
+                }
+            }
             if (y > 0 && y < 7 && x > 0 && x < 7)
             {
                 Console.WriteLine("Середина!!!");
@@ -540,31 +608,15 @@ namespace Шашечки
             }
             if ((y <= 1 && x <= 6) && (board[x + 1, y + 1].Image == whitesh.Image | board[x + 1, y + 1].Image == whiteQueen.Image))
             {
-                if (board[x + 1, y + 1].Image == null)//Бесполезность!
-                {
-                    oc = 1;
-                    if (checkIfCantDie(x + 1, y + 1)) oc++;
-                    return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 };
-                }
                 Console.WriteLine("Левый край!!!");
                 if (checkIfCanEat(x, y))
                 {
                     oc += checkIfCanEatAndCantDie(x, y);
                     return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 };
-
                 }
             }
-            if (y <= 1 && x >= 1 && board[x - 1, y + 1].Image == null)//Не понятно что это!
-            {
-                Console.WriteLine("ЛЕвый край!!!");
-                oc = 1;
-                if (checkIfCantDie(x - 1, y + 1))
-                {
-                    oc++;
-                }
-                return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x - 1, secondYPos = y + 1 };
-            }
-            if ((y <= 1 && x > 1) && (board[x - 1, y + 1].Image == whitesh.Image | board[x - 1, y + 1].Image == whiteQueen.Image))//Зачем?
+            
+            if ((y <= 1 && x >= 1) && (board[x - 1, y + 1].Image == whitesh.Image | board[x - 1, y + 1].Image == whiteQueen.Image))//Зачем?
             {
                 Console.WriteLine("ЛЕвый Край!!!");
 
@@ -637,12 +689,6 @@ namespace Шашечки
             if (y >= 1 && y <= 6 && x >= 6)
             {
                 Console.WriteLine("НИЗ!!!");
-
-                if (board[x + 1, y - 1].Image == null)
-                {
-                    oc = 1;
-                    return new AICheckers { ocenka = oc, firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 };
-                }
                 if ((board[x - 1, y - 1].Image == whitesh.Image | board[x - 1, y - 1].Image == whiteQueen.Image) && y != 1)
                 {
                     if (checkIfCanEat(x, y))
