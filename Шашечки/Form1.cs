@@ -383,6 +383,9 @@ namespace Шашечки
 
             if (!checkForHighlith() && all.Count > 0)
             {
+                int curate = blackAte;
+                Console.Write(curate);
+                Console.Write(" curate\n");
                 if (board[all[0].firstXPos, all[0].firstYPos].Image == blacksh.Image)
                 {
                     blackStepper(all[0].firstXPos, all[0].firstYPos, all[0].secondXPos, all[0].secondYPos);
@@ -392,10 +395,48 @@ namespace Шашечки
                     blackQueenStepper(all[0].firstXPos, all[0].firstYPos, all[0].secondXPos, all[0].secondYPos);
                 }
                 history.Text += hod[all[0].firstXPos].ToString() + (all[0].firstYPos - 1).ToString() + " -> " + hod[all[0].secondXPos].ToString() + (all[0].secondYPos - 1).ToString() + "\n";
-                numberOfStep++;
-                player = numberOfStep % 2 != 0 ? "white" : "black";
-                playersname.Text = player + " turn";
+                Console.WriteLine("MADE STEP");
+                if (curate - blackAte == 0 || !checkIfCanEat(all[0].secondXPos, all[0].secondYPos))
+                {
+                    Console.WriteLine("MADE STEP without eating");
+                    numberOfStep++;
+                    player = numberOfStep % 2 != 0 ? "white" : "black";
+                    playersname.Text = player + " turn";
+                }
+                else if (curate != blackAte && checkIfCanEat(all[0].secondXPos, all[0].secondYPos))
+                {
+                    while (curate != blackAte && checkIfCanEat(all[0].secondXPos, all[0].secondYPos))
+                    {
+                        curate = blackAte;
+
+                        var hodik = allhodstoEat(all[0].secondXPos, all[0].secondYPos);
+                                              
+                        for (int i = 0; i < hodik.Count; i++)
+                            for (int j = 0; j < hodik.Count - i - 1; j++)
+                                if (hodik[j].ocenka < hodik[j + 1].ocenka)
+                                {
+                                    AICheckers temp = hodik[j];
+                                    hodik[j] = hodik[j + 1];
+                                    hodik[j + 1] = temp;
+                                }
+                        for (int i = 0; i < hodik.Count; i++)
+                            Console.WriteLine(hodik[i].ocenka + " | " + hodik[i].firstXPos + " | " + hodik[i].firstYPos + " | " + hodik[i].secondXPos + " | " + hodik[i].secondYPos);
+                        makestep(hodik[0].firstXPos, hodik[0].firstYPos, hodik[0].secondXPos, hodik[0].secondYPos);
+                        if (hodik[0].secondXPos == 7) break;
+                    }
+                    numberOfStep++;
+                    player = numberOfStep % 2 != 0 ? "white" : "black";
+                    playersname.Text = player + " turn";
+                }
             }
+        }
+
+        public void makestep(int x1, int y1, int x2, int y2)
+        {
+            if (board[x1, y1].Image == blacksh.Image)
+                blackStepper(x1, y1, x2, y2);
+            if (board[x1,y1].Image == blackQueen.Image)
+                blackQueenStepper(x1,y1,x2,y2);
         }
 
         public bool checkForHighlith()
@@ -410,6 +451,93 @@ namespace Шашечки
                 }
             }
             return otvet;
+        }
+
+        public List<AICheckers> allhodstoEat(int x, int y)
+        {
+            List<AICheckers> hods = new List<AICheckers>();
+
+            if (x > 1 && y > 1 && x < 7 && y < 7)
+            {
+                if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                    {
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                    }
+                if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                    {
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                    }
+                if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                    {
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+                    }
+                if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                    {
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                    }
+            }
+            if (x <= 1 && y > 1 && y < 7)
+            {
+                if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                    {
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                    }
+                if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                    {
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                    }
+            }
+            if (y <= 1 && x > 1 && x < 7)
+            {
+                if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+            }
+
+            if (y >= 6 && x > 1 && x < 7)
+            {
+                if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                    
+            }
+            if (y <= 1 && x <= 1)
+                if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+            
+            if (y >= 6 && x <= 1)
+                if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+            if (y <= 1 && x >= 6)
+                if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+            if (y >=6 && x >= 6)
+                if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+            for (int i = 0; i < hods.Count; i++)
+            {
+                var h = hods[i];
+                if ((board[h.secondXPos, h.secondYPos].Image == whitesh.Image || board[h.secondXPos, h.secondYPos].Image == whiteQueen.Image) || (h.secondXPos > 7 || h.secondXPos < 0 || h.secondYPos > 7 || h.secondYPos < 0))
+                    h.ocenka = -1;
+                hods[i] = h;
+            }
+            return hods;
         }
 
         public List<AICheckers> allhods(int x, int y)
@@ -484,6 +612,35 @@ namespace Шашечки
                     {
                         hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
                     }
+            }
+            if (y <= 1 && x <= 1)
+            {
+                if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+            }
+            if (y >= 6 && x <= 1)
+            {
+                if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+            }
+            if (y <= 1 && x >= 6)
+                if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+            if (y >= 6 && x >= 6)
+                if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
+                    if (checkIfCanEat(x, y))
+                        hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+            for (int i = 0; i < hods.Count; i++)
+            {
+                var h = hods[i];
+                if ((h.secondXPos > 7 || h.secondXPos < 0 || h.secondYPos > 7 || h.secondYPos < 0) || (board[h.secondXPos, h.secondYPos].Image == whitesh.Image || board[h.secondXPos, h.secondYPos].Image == whiteQueen.Image))
+                    h.ocenka = -1;
+                hods[i] = h;
             }
             return hods;
         }
@@ -1852,7 +2009,10 @@ namespace Шашечки
                     board[xk + 1, yk + 1].Image = null;
                 }
             }
-            if (xk == 7) board[xk, yk].Image = blackQueen.Image;
+            if (xk == 7) 
+            {
+                board[xk, yk].Image = blackQueen.Image;
+            }
             else board[xk, yk].Image = blacksh.Image;
             whiteScore.Text = whiteAte.ToString();
             blackScore.Text = blackAte.ToString();
