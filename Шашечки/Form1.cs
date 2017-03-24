@@ -20,6 +20,7 @@ namespace Шашечки
         private string player = "white";
         private Dictionary<int, string> hod;
         private String type;
+        private Random random = new Random();
         public Form1(String player)
         {
             type = player;
@@ -335,15 +336,9 @@ namespace Шашечки
                 for (int j = 0; j < 8; j++)
                     if (board[i, j].Image == blacksh.Image | board[i, j].Image == blackQueen.Image)
                     {
-                        Console.WriteLine(i + "; " + j);
                         int[] cur = { i, j };
                         coords.Add(cur);
                     }
-            Console.WriteLine("kolichestwo shashek " + coords.Count);
-            for (int i = 0; i < coords.Count; i++)
-            {
-                Console.WriteLine(i + " " + coords[i][0] + "; " + coords[i][1]);
-            }
             List<AICheckers> ocenki = new List<AICheckers>();
             for (int i = 0; i < coords.Count; i++)
             {
@@ -352,51 +347,27 @@ namespace Шашечки
                     ocenki.Add(step[j]);
             }           
 
-            List<AICheckers> all = new List<AICheckers>();
+            List<AICheckers> allh = new List<AICheckers>();
             for (int i = 0; i < ocenki.Count; i++)
-            {
                 if (ocenki[i].ocenka != 0)
-                {
-                    Console.WriteLine("ocenci " + i + " " + ocenki[i]);
-                    Console.WriteLine(ocenki[i].ocenka + " " + ocenki[i].firstXPos + " " + ocenki[i].firstYPos + " " + ocenki[i].secondXPos + " " + ocenki[i].secondYPos);
-                    all.Add(ocenki[i]);
-                }
-                else Console.WriteLine(i + " null");
-            }
-            for (int i = 0; i < all.Count; i++)
-            {
-                for (int j = 0; j < all.Count - i - 1; j++)
-                {
-                    if (all[j].ocenka < all[j + 1].ocenka)
-                    {
-                        AICheckers temp = all[j];
-                        all[j] = all[j + 1];
-                        all[j + 1] = temp;
-                    }
-                }
-            }
-            Console.WriteLine("all.Count = " + all.Count);
-            for (int i = 0; i < all.Count; i++)
-            {
-                Console.WriteLine(all[i] + " | " + all[i].ocenka + " | " + all[i].firstXPos + " ; " + all[i].firstYPos + " | " + all[i].secondXPos + " ; " + all[i].secondYPos);
-            }
+                    allh.Add(ocenki[i]);
+
+            var all = sorter(allh);
+            
 
             if (!checkForHighlith() && all.Count > 0)
             {
                 int curate = blackAte;
                 Console.Write(curate);
                 Console.Write(" curate\n");
-                if (board[all[0].firstXPos, all[0].firstYPos].Image == blacksh.Image)
-                {
-                    blackStepper(all[0].firstXPos, all[0].firstYPos, all[0].secondXPos, all[0].secondYPos);
-                }
-                if (board[all[0].firstXPos, all[0].firstYPos].Image == blackQueen.Image)
-                {
-                    blackQueenStepper(all[0].firstXPos, all[0].firstYPos, all[0].secondXPos, all[0].secondYPos);
-                }
-                history.Text += hod[all[0].firstXPos].ToString() + (all[0].firstYPos - 1).ToString() + " -> " + hod[all[0].secondXPos].ToString() + (all[0].secondYPos - 1).ToString() + "\n";
+                int r = random.Next(all.Count);
+                if (board[all[r].firstXPos, all[r].firstYPos].Image == blacksh.Image)
+                    blackStepper(all[r].firstXPos, all[r].firstYPos, all[r].secondXPos, all[r].secondYPos);
+                if (board[all[r].firstXPos, all[r].firstYPos].Image == blackQueen.Image)
+                    blackQueenStepper(all[r].firstXPos, all[r].firstYPos, all[r].secondXPos, all[r].secondYPos);
+                history.Text += hod[all[r].firstXPos].ToString() + (all[r].firstYPos - 1).ToString() + " -> " + hod[all[r].secondXPos].ToString() + (all[r].secondYPos - 1).ToString() + "\n";
                 Console.WriteLine("MADE STEP");
-                if (curate - blackAte == 0 || !checkIfCanEat(all[0].secondXPos, all[0].secondYPos))
+                if (curate - blackAte == 0 || !checkIfCanEat(all[r].secondXPos, all[r].secondYPos))
                 {
                     Console.WriteLine("MADE STEP without eating");
                     numberOfStep++;
@@ -409,26 +380,39 @@ namespace Шашечки
                     {
                         curate = blackAte;
                         bool wp = board[all[0].secondXPos, all[0].secondYPos].Image == blacksh.Image;
-                        var hodik = allhodstoEat(all[0].secondXPos, all[0].secondYPos);
-                                              
-                        for (int i = 0; i < hodik.Count; i++)
-                            for (int j = 0; j < hodik.Count - i - 1; j++)
-                                if (hodik[j].ocenka < hodik[j + 1].ocenka)
-                                {
-                                    AICheckers temp = hodik[j];
-                                    hodik[j] = hodik[j + 1];
-                                    hodik[j + 1] = temp;
-                                }
+                        var hodiks = allhodstoEat(all[0].secondXPos, all[0].secondYPos);
+
+                        var hodik = sorter(hodiks);   
+                        
                         for (int i = 0; i < hodik.Count; i++)
                             Console.WriteLine(hodik[i].ocenka + " | " + hodik[i].firstXPos + " | " + hodik[i].firstYPos + " | " + hodik[i].secondXPos + " | " + hodik[i].secondYPos);
-                        makestep(hodik[0].firstXPos, hodik[0].firstYPos, hodik[0].secondXPos, hodik[0].secondYPos);
-                        if (hodik[0].secondXPos == 7 & wp) break;
+                        r = random.Next(hodik.Count);
+                        makestep(hodik[r].firstXPos, hodik[r].firstYPos, hodik[r].secondXPos, hodik[r].secondYPos);
+                        if (hodik[r].secondXPos == 7 & wp) break;
                     }
                     numberOfStep++;
                     player = numberOfStep % 2 != 0 ? "white" : "black";
                     playersname.Text = player + " turn";
                 }
             }
+        }
+
+        public List<AICheckers> sorter(List<AICheckers> list)
+        {
+            List<AICheckers> newlist = new List<AICheckers>();
+
+            for (int i = 0; i < list.Count; i++)
+                for (int j = 0; j < list.Count - i - 1; j++)
+                    if (list[j].ocenka < list[j + 1].ocenka)
+                    {
+                        AICheckers temp = list[j];
+                        list[j] = list[j + 1];
+                        list[j + 1] = temp;
+                    }
+            for (int i = 0; i < list.Count; i++)
+                if (list[i].ocenka == list[0].ocenka)
+                    newlist.Add(list[i]);
+            return newlist;
         }
 
         public void makestep(int x1, int y1, int x2, int y2)
@@ -1144,6 +1128,13 @@ namespace Шашечки
             if (y <= 1 && x >= 1 && board[x - 1, y + 1].Image == null)
             {
                 board[x - 1, y + 1].BackgroundImage = highlight.Image;
+            }
+            if (y <= 1 & x <= 1)
+            {
+                if ((board[x+1, y+1].Image == blacksh.Image | board[x + 1, y + 1].Image == blacksh.Image) & board[x+2, y+2].Image == null)
+                {
+                    board[x + 2, y + 2].BackgroundImage = highlight.Image;
+                }
             }
             if ((y <= 1 && x > 1) && (board[x - 1, y + 1].Image == blacksh.Image | board[x - 1, y + 1].Image == blackQueen.Image))
             {
@@ -2298,7 +2289,7 @@ namespace Шашечки
                 }
             }
             for (int i = 0; i < 8; i++)
-            {
+            
                 for (int j = 0; j < 8; j++)
                 {
                     if (i % 2 == 0)
@@ -2333,7 +2324,6 @@ namespace Шашечки
                         }
                     }
                 }
-            }
         }
 
         private void startNewGame_Click(object sender, EventArgs e)
