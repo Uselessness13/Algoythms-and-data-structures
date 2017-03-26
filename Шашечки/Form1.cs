@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -99,9 +101,67 @@ namespace Шашечки
             }
         }
 
+        public void connection(string ipAddr, int port)
+        {
+            try
+            {
+                IPAddress ip = IPAddress.Parse(ipAddr);
+                IPEndPoint ep = new IPEndPoint(ip, port);
+
+                TcpClient client = new TcpClient(ep);
+                client.Connect(ep);
+
+                type = "tour";
+                // Translate the passed message into ASCII and store it as a Byte array.
+                Byte[] data = System.Text.Encoding.ASCII.GetBytes("piska");
+
+                // Get a client stream for reading and writing.
+                //  Stream stream = client.GetStream();
+
+                NetworkStream stream = client.GetStream();
+
+                // Send the message to the connected TcpServer. 
+                stream.Write(data, 0, data.Length);
+
+                MessageBox.Show("Sent: piska");
+
+                // Receive the TcpServer.response.
+
+                // Buffer to store the response bytes.
+                data = new Byte[256];
+
+                // String to store the response ASCII representation.
+                String responseData = String.Empty;
+
+                // Read the first batch of the TcpServer response bytes.
+                Int32 bytes = stream.Read(data, 0, data.Length);
+                responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                MessageBox.Show("Recieved: {0}", responseData);
+
+                // Close everything.
+                stream.Close();
+                client.Close();
+            }
+            catch (ArgumentNullException e)
+            {
+                MessageBox.Show("TI OBOSRALSYA\n{0}", e.Message);
+            }
+            catch (SocketException e)
+            {
+                MessageBox.Show("TI OBOSRALSYA na socketah\n{0}", e.Message);
+            }
+
+
+        }
+
         private int[] current;
+
         private void boardpart_Click(object sender, EventArgs e)
         {
+            if (type == "tour")
+            {
+
+            }
             if (type == "mem")
             {
                 int y = ((Cursor.Position.X + 20 - this.DesktopLocation.X) / 50) - 1;
@@ -272,13 +332,15 @@ namespace Шашечки
 
                 if (board[x, y].BackgroundImage == highlight.Image)
                 {
+                    bool wp;
                     if (board[current[0], current[1]].Image == whitesh.Image)
                     {
                         whiteScore.Text = whiteAte.ToString();
                         blackScore.Text = blackAte.ToString();
                         cleaner();
+                        wp = true;
                         whiteStepper(current[0], current[1], x, y);
-                        if (whiteEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && whiteAte > whsch)
+                        if (whiteEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && whiteAte > whsch )
                         {
                             current = new int[] { x, y };
                         }
@@ -294,11 +356,12 @@ namespace Шашечки
                     }
                     if (board[current[0], current[1]].Image == whiteQueen.Image)
                     {
+                        wp = false;
                         whiteScore.Text = whiteAte.ToString();
                         blackScore.Text = blackAte.ToString();
                         cleaner();
                         whiteQueenStepper(current[0], current[1], x, y);
-                        if (whiteQueenEatChecker(x, y) && whiteAte > whsch)
+                        if ((whiteQueenEatChecker(x, y) && whiteAte > whsch) & wp!=true)
                         {
                             current = new int[] { x, y };
                         }
@@ -2264,12 +2327,8 @@ namespace Шашечки
         public void cleaner()
         {
             for (int i = 0; i < 8; i++)
-            {
                 for (int j = 0; j < 8; j++)
-                {
                     board[i, j].BackgroundImage = board[i, j].BackgroundImage == highlight.Image ? blacksh.BackgroundImage : board[i, j].BackgroundImage;
-                }
-            }
         }
 
         public void newGame()
@@ -2282,14 +2341,10 @@ namespace Шашечки
             numberOfStep = 1;
             cleaner();
             for (int i = 0; i < 8; i++)
-            {
                 for (int j = 0; j < 8; j++)
-                {
                     board[i, j].Image = null;
-                }
-            }
+               
             for (int i = 0; i < 8; i++)
-            
                 for (int j = 0; j < 8; j++)
                 {
                     if (i % 2 == 0)
@@ -2298,13 +2353,9 @@ namespace Шашечки
                         else
                         {
                             if (i <= 2)
-                            {
                                 board[i, j].Image = blacksh.Image;
-                            }
                             if (i > 4)
-                            {
                                 board[i, j].Image = whitesh.Image;
-                            }
                         }
                     }
                     else
@@ -2312,15 +2363,10 @@ namespace Шашечки
                         if (j % 2 != 0) { }
                         else
                         {
-
                             if (i <= 2)
-                            {
                                 board[i, j].Image = blacksh.Image;
-                            }
                             if (i > 4)
-                            {
                                 board[i, j].Image = whitesh.Image;
-                            }
                         }
                     }
                 }
@@ -2329,6 +2375,12 @@ namespace Шашечки
         private void startNewGame_Click(object sender, EventArgs e)
         {
             newGame();
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            Form2 f2 = new Form2();
+            f2.Show();
         }
     }
 }

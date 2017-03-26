@@ -57,6 +57,7 @@
             this.label16 = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.whiteQueen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.blackQueen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.highlight)).BeginInit();
@@ -67,7 +68,7 @@
             // history
             // 
             this.history.Location = new System.Drawing.Point(608, 111);
-            this.history.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.history.Margin = new System.Windows.Forms.Padding(4);
             this.history.Name = "history";
             this.history.ReadOnly = true;
             this.history.Size = new System.Drawing.Size(199, 370);
@@ -79,7 +80,7 @@
             this.whiteQueen.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("whiteQueen.BackgroundImage")));
             this.whiteQueen.Image = global::Шашечки.Properties.Resources.belaya_damka;
             this.whiteQueen.Location = new System.Drawing.Point(13, 288);
-            this.whiteQueen.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.whiteQueen.Margin = new System.Windows.Forms.Padding(4);
             this.whiteQueen.Name = "whiteQueen";
             this.whiteQueen.Size = new System.Drawing.Size(67, 62);
             this.whiteQueen.TabIndex = 5;
@@ -91,7 +92,7 @@
             this.blackQueen.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("blackQueen.BackgroundImage")));
             this.blackQueen.Image = global::Шашечки.Properties.Resources.sinyaya_damka;
             this.blackQueen.Location = new System.Drawing.Point(13, 220);
-            this.blackQueen.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.blackQueen.Margin = new System.Windows.Forms.Padding(4);
             this.blackQueen.Name = "blackQueen";
             this.blackQueen.Size = new System.Drawing.Size(67, 62);
             this.blackQueen.TabIndex = 4;
@@ -102,7 +103,7 @@
             // 
             this.highlight.Image = global::Шашечки.Properties.Resources.black_highlited;
             this.highlight.Location = new System.Drawing.Point(13, 13);
-            this.highlight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.highlight.Margin = new System.Windows.Forms.Padding(4);
             this.highlight.Name = "highlight";
             this.highlight.Size = new System.Drawing.Size(67, 62);
             this.highlight.TabIndex = 3;
@@ -114,7 +115,7 @@
             this.blacksh.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("blacksh.BackgroundImage")));
             this.blacksh.Image = global::Шашечки.Properties.Resources.black_checker;
             this.blacksh.Location = new System.Drawing.Point(13, 151);
-            this.blacksh.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.blacksh.Margin = new System.Windows.Forms.Padding(4);
             this.blacksh.Name = "blacksh";
             this.blacksh.Size = new System.Drawing.Size(67, 62);
             this.blacksh.TabIndex = 2;
@@ -126,7 +127,7 @@
             this.whitesh.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("whitesh.BackgroundImage")));
             this.whitesh.Image = global::Шашечки.Properties.Resources.white_checker;
             this.whitesh.Location = new System.Drawing.Point(13, 82);
-            this.whitesh.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.whitesh.Margin = new System.Windows.Forms.Padding(4);
             this.whitesh.Name = "whitesh";
             this.whitesh.Size = new System.Drawing.Size(67, 62);
             this.whitesh.TabIndex = 1;
@@ -136,7 +137,7 @@
             // startNewGame
             // 
             this.startNewGame.Location = new System.Drawing.Point(608, 489);
-            this.startNewGame.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.startNewGame.Margin = new System.Windows.Forms.Padding(4);
             this.startNewGame.Name = "startNewGame";
             this.startNewGame.Size = new System.Drawing.Size(200, 28);
             this.startNewGame.TabIndex = 6;
@@ -147,7 +148,7 @@
             // playersname
             // 
             this.playersname.Location = new System.Drawing.Point(609, 13);
-            this.playersname.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.playersname.Margin = new System.Windows.Forms.Padding(4);
             this.playersname.Name = "playersname";
             this.playersname.ReadOnly = true;
             this.playersname.Size = new System.Drawing.Size(188, 22);
@@ -371,11 +372,22 @@
             this.label18.TabIndex = 27;
             this.label18.Text = "8";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(732, 524);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 28;
+            this.button1.Text = "Connect";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(810, 546);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.label16);
@@ -405,7 +417,7 @@
             this.Controls.Add(this.whitesh);
             this.Controls.Add(this.history);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "ШАШЕЧКИ";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -449,6 +461,7 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button button1;
     }
 }
 
