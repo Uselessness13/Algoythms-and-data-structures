@@ -110,45 +110,59 @@ namespace Шашечки
 
                 TcpClient client = new TcpClient(ep);
                 client.Connect(ep);
+                if (client.Connected)
+                    MessageBox.Show("connected");
+
 
                 type = "tour";
                 // Translate the passed message into ASCII and store it as a Byte array.
-                Byte[] data = System.Text.Encoding.ASCII.GetBytes("piska");
-
-                // Get a client stream for reading and writing.
-                //  Stream stream = client.GetStream();
-
+                Timer sleeper = new Timer();
                 NetworkStream stream = client.GetStream();
+                sleeper.Interval = 1000000000;
+                sleeper.Start();
+                while (true)
+                {
+                    byte[] data = convertBoard();
 
-                // Send the message to the connected TcpServer. 
-                stream.Write(data, 0, data.Length);
+                    // Get a client stream for reading and writing.
+                    //  Stream stream = client.GetStream();
 
-                MessageBox.Show("Sent: piska");
+                    
 
-                // Receive the TcpServer.response.
+                    // Send the message to the connected TcpServer. 
+                    stream.Write(data, 0, data.Length);
 
-                // Buffer to store the response bytes.
-                data = new Byte[256];
+                    MessageBox.Show("Sent: " + data.ToString());
+                    // Receive the TcpServer.response.
 
-                // String to store the response ASCII representation.
-                String responseData = String.Empty;
+                    // Buffer to store the response bytes.
+                    data = new Byte[256];
 
-                // Read the first batch of the TcpServer response bytes.
-                Int32 bytes = stream.Read(data, 0, data.Length);
-                responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
-                MessageBox.Show("Recieved: {0}", responseData);
+                    // String to store the response ASCII representation.
+                    String responseData = String.Empty;
 
-                // Close everything.
+                    // Read the first batch of the TcpServer response bytes.
+                    Int32 bytes = stream.Read(data, 0, data.Length);
+                    responseData = Encoding.ASCII.GetString(data, 0, bytes);
+                    MessageBox.Show("Recieved: " + responseData);
+                    
+                    if (responseData == "")
+                    {
+                        // притормозить на пару секунд...
+                    }
+                        
+                }
+                sleeper.Stop();
                 stream.Close();
                 client.Close();
             }
             catch (ArgumentNullException e)
             {
-                MessageBox.Show("TI OBOSRALSYA\n{0}", e.Message);
+                MessageBox.Show("TI OBOSRALSYA\n"+ e.Message);
             }
             catch (SocketException e)
             {
-                MessageBox.Show("TI OBOSRALSYA na socketah\n{0}", e.Message);
+                MessageBox.Show("TI OBOSRALSYA na socketah\n"+ e.Message);
             }
 
 
@@ -160,7 +174,7 @@ namespace Шашечки
         {
             if (type == "tour")
             {
-
+                
             }
             if (type == "mem")
             {
@@ -332,15 +346,13 @@ namespace Шашечки
 
                 if (board[x, y].BackgroundImage == highlight.Image)
                 {
-                    bool wp;
                     if (board[current[0], current[1]].Image == whitesh.Image)
                     {
                         whiteScore.Text = whiteAte.ToString();
                         blackScore.Text = blackAte.ToString();
                         cleaner();
-                        wp = true;
                         whiteStepper(current[0], current[1], x, y);
-                        if (whiteEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && whiteAte > whsch )
+                        if (whiteEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && whiteAte > whsch)
                         {
                             current = new int[] { x, y };
                         }
@@ -354,14 +366,26 @@ namespace Шашечки
                         }
                         analyser();
                     }
+                    if (board[current[0], current[1]].Image == whitesh.Image && x == 0)
+                    {
+                        whiteScore.Text = whiteAte.ToString();
+                        blackScore.Text = blackAte.ToString();
+                        cleaner();
+                        whiteStepper(current[0], current[1], x, y);
+                        cleaner();
+                        history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
+                        numberOfStep++;
+                        player = numberOfStep % 2 != 0 ? "white" : "black";
+                        playersname.Text = player + " turn";
+                        analyser();
+                    }
                     if (board[current[0], current[1]].Image == whiteQueen.Image)
                     {
-                        wp = false;
                         whiteScore.Text = whiteAte.ToString();
                         blackScore.Text = blackAte.ToString();
                         cleaner();
                         whiteQueenStepper(current[0], current[1], x, y);
-                        if ((whiteQueenEatChecker(x, y) && whiteAte > whsch) & wp!=true)
+                        if ((whiteQueenEatChecker(x, y) && whiteAte > whsch))
                         {
                             current = new int[] { x, y };
                         }
@@ -2379,8 +2403,40 @@ namespace Шашечки
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            Form2 f2 = new Form2();
-            f2.Show();
+            type = "tour";
+            connection("127.0.0.1", 80);
         }
+
+        public byte[] convertBoard()
+        {
+            byte[] pole = new byte[64];
+
+            for (int i =0; i < 7; i++)
+                for (int j = 0; j < 7; j++)
+                {
+                    int ind = 8 * i + j;
+                    if (board[i, j].Image == whitesh.Image)
+                        pole[ind] = 1;
+                    if (board[i, j].Image == whiteQueen.Image)
+                        pole[ind] = 3;
+                    if (board[i, j].Image == blacksh.Image)
+                        pole[ind] = 2;
+                    if (board[i, j].Image == blackQueen.Image)
+                        pole[ind] = 4;
+                    if (board[i, j].Image == null)
+                        pole[ind] = 0;
+                }
+            return pole;
+        }
+
+        public void convertToBoard(byte[] pole)
+        {
+            for(int i = 0; i < pole.Length; i++)
+            {
+                int ind = i / 8;
+                board[ind, i - ind].Image = pole[i] == 1 ? whitesh.Image : pole[i] == 2 ? blacksh.Image : pole[i] == 3 ? whiteQueen.Image : pole[i] == 4 ? blackQueen.Image : null;
+            }
+        }
+        
     }
 }
