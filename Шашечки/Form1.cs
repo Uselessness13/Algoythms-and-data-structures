@@ -23,6 +23,8 @@ namespace Шашечки
         private Dictionary<int, string> hod;
         private String type;
         private Random random = new Random();
+        TcpClient client;
+        IPEndPoint ep;
         public Form1(String player)
         {
             type = player;
@@ -31,6 +33,7 @@ namespace Шашечки
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            timer1.Enabled = false;
             hod = new Dictionary<int, string>();
             hod.Add(0, "a");
             hod.Add(1, "b");
@@ -101,71 +104,68 @@ namespace Шашечки
             }
         }
 
-        public void connection(string ipAddr, int port)
+        public void connection()
         {
-            try
-            {
-                IPAddress ip = IPAddress.Parse(ipAddr);
-                IPEndPoint ep = new IPEndPoint(ip, port);
+            timer1.Enabled = true;
+            //try
+            //{
+            //    IPAddress ip = IPAddress.Parse("127.0.0.1");
+            //    IPEndPoint ep = new IPEndPoint(ip, 8005);
 
-                TcpClient client = new TcpClient(ep);
-                client.Connect(ep);
-                if (client.Connected)
-                    MessageBox.Show("connected");
+            //    TcpClient client = new TcpClient(ep);
+            //    client.Connect(ep);
+            //    if (client.Connected)
+            //        MessageBox.Show("connected");
+            //    type = "tour";
+            //    Timer sleeper = new Timer();
+            //    NetworkStream stream = client.GetStream();
+                
+            //    string colur = "green\r\n\r\n";
+            //    stream.Write(Encoding.ASCII.GetBytes(colur), 0, Encoding.ASCII.GetBytes(colur).Length);
 
+            //    string response = "";
+            //    byte[] d = new byte[1024];
+            //    int counter;
 
-                type = "tour";
-                // Translate the passed message into ASCII and store it as a Byte array.
-                Timer sleeper = new Timer();
-                NetworkStream stream = client.GetStream();
-                sleeper.Interval = 1000000000;
-                sleeper.Start();
-                while (true)
-                {
-                    byte[] data = convertBoard();
+            //    while ((counter = client.GetStream().Read(d,0,d.Length)) > 0)
+            //    {
+            //        response += Encoding.ASCII.GetString(d, 0, counter);
 
-                    // Get a client stream for reading and writing.
-                    //  Stream stream = client.GetStream();
+            //        MessageBox.Show("Recieved: " + response);
+            //        if (response.IndexOf("\r\n\r\n") > -1)
+            //            break;
+            //    }
+            //    byte[] data = convertBoard();
+            //    stream.Write(data, 0, data.Length);
 
-                    
+            //    response = "";
+            //    d = new byte[1024];
+            //    counter = 0;
 
-                    // Send the message to the connected TcpServer. 
-                    stream.Write(data, 0, data.Length);
+            //    while ((counter = client.GetStream().Read(d, 0, d.Length)) > 0)
+            //    {
+            //        response += Encoding.ASCII.GetString(d, 0, counter);
 
-                    MessageBox.Show("Sent: " + data.ToString());
-                    // Receive the TcpServer.response.
+            //        MessageBox.Show("Recieved: " + response);
+            //        if (response.IndexOf("\r\n\r\n") > -1)
+            //            break;
+            //    }
+            //    convertToBoard(Encoding.ASCII.GetBytes(response));
+            //    stream.Close();
+            //    client.Close();
+            //    analyser();
+            //    data = convertBoard();
+            //    stream.Write(data, 0, data.Length);
 
-                    // Buffer to store the response bytes.
-                    data = new Byte[256];
-
-                    // String to store the response ASCII representation.
-                    String responseData = String.Empty;
-
-                    // Read the first batch of the TcpServer response bytes.
-                    Int32 bytes = stream.Read(data, 0, data.Length);
-                    responseData = Encoding.ASCII.GetString(data, 0, bytes);
-                    MessageBox.Show("Recieved: " + responseData);
-                    
-                    if (responseData == "")
-                    {
-                        // притормозить на пару секунд...
-                    }
-                        
-                }
-                sleeper.Stop();
-                stream.Close();
-                client.Close();
-            }
-            catch (ArgumentNullException e)
-            {
-                MessageBox.Show("TI OBOSRALSYA\n"+ e.Message);
-            }
-            catch (SocketException e)
-            {
-                MessageBox.Show("TI OBOSRALSYA na socketah\n"+ e.Message);
-            }
-
-
+            //}
+            //catch (ArgumentNullException e)
+            //{
+            //    MessageBox.Show("TI OBOSRALSYA\n" + e.Message);
+            //}
+            //catch (SocketException e)
+            //{
+            //    MessageBox.Show("TI OBOSRALSYA na socketah\n" + e.Message);
+            //}
         }
 
         private int[] current;
@@ -2404,39 +2404,94 @@ namespace Шашечки
         private void button1_Click_1(object sender, EventArgs e)
         {
             type = "tour";
-            connection("127.0.0.1", 80);
+            connection();
         }
 
-        public byte[] convertBoard()
+        public string convertBoard()
         {
-            byte[] pole = new byte[64];
-
-            for (int i =0; i < 7; i++)
-                for (int j = 0; j < 7; j++)
+            string pole = "";
+            for (int i =0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
                 {
-                    int ind = 8 * i + j;
                     if (board[i, j].Image == whitesh.Image)
-                        pole[ind] = 1;
+                        pole+= '1';
                     if (board[i, j].Image == whiteQueen.Image)
-                        pole[ind] = 3;
+                        pole += '3';
                     if (board[i, j].Image == blacksh.Image)
-                        pole[ind] = 2;
+                        pole += '2';
                     if (board[i, j].Image == blackQueen.Image)
-                        pole[ind] = 4;
+                        pole += '4';
                     if (board[i, j].Image == null)
-                        pole[ind] = 0;
+                        pole += '0';
                 }
-            return pole;
+            char[] buff = pole.ToCharArray();
+            Array.Reverse(buff);
+            string pole2 = new string(buff);
+            pole2 += "\r\n\r\n";
+            return pole2;
         }
 
-        public void convertToBoard(byte[] pole)
+        public void convertToBoard(byte[] boardd)
         {
+            string pole = "";
+            for (int i = boardd.Length-1; i >= 0; i--)
+                pole += boardd[boardd.Length-1 - i];
+            
             for(int i = 0; i < pole.Length; i++)
             {
                 int ind = i / 8;
-                board[ind, i - ind].Image = pole[i] == 1 ? whitesh.Image : pole[i] == 2 ? blacksh.Image : pole[i] == 3 ? whiteQueen.Image : pole[i] == 4 ? blackQueen.Image : null;
+                board[ind, i - ind].Image = pole[i] == '1' ? whitesh.Image : pole[i] == '2' ? blacksh.Image : pole[i] == '3' ? whiteQueen.Image : pole[i] == '4' ? blackQueen.Image : null;
             }
         }
-        
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            client = new TcpClient("127.0.0.1", 8005);
+            if (client.Connected)
+                history.Text+="connected\n";
+                type = "tour";
+
+            NetworkStream stream = client.GetStream();
+
+            string colur = "white\r\n\r\n";
+            stream.Write(Encoding.ASCII.GetBytes(colur), 0, Encoding.ASCII.GetBytes(colur).Length);
+
+            string response = "";
+            byte[] d = new byte[1024];
+            Int32 counter;
+            stream.Flush();
+            counter = client.GetStream().Read(d, 0, d.Length);
+            response = Encoding.ASCII.GetString(d);
+            history.Text += "response\n" + response + "\n;";
+            //while ((counter = client.GetStream().Read(d, 0, d.Length)) > 0)
+            //{
+            //    response += Encoding.ASCII.GetString(d, 0, counter);
+            //    history.Text += "response\n" + response + "\n;";
+            //    if (response.IndexOf("\r\n\r\n") > -1 || response.Length > 2048)
+            //            break;
+            //}
+            string data = convertBoard();
+            stream.Flush();
+            stream.Write(Encoding.ASCII.GetBytes(data), 0, Encoding.ASCII.GetBytes(data).Length);
+            stream.Flush();
+            response = "";
+            d = new byte[1024];
+            int counter2 = 0;
+
+            while ((counter2 = client.GetStream().Read(d, 0, d.Length)) > 0)
+            {
+                response += Encoding.ASCII.GetString(d, 0, counter2);
+
+                history.Text += "response\n" + response + "\n;";
+                if (response.IndexOf("\r\n\r\n") > -1)
+                        break;
+            }
+            convertToBoard(Encoding.ASCII.GetBytes(response));
+            analyser();
+            data = convertBoard();
+            stream.Write(Encoding.ASCII.GetBytes(data), 0, Encoding.ASCII.GetBytes(data).Length);
+            stream.Close();
+            client.Close();
+        }
     }
 }
