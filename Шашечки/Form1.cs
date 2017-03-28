@@ -2463,15 +2463,10 @@ namespace Шашечки
             counter = client.GetStream().Read(d, 0, d.Length);
             response = Encoding.ASCII.GetString(d);
             history.Text += "response\n" + response + "\n;";
-            //while ((counter = client.GetStream().Read(d, 0, d.Length)) > 0)
-            //{
-            //    response += Encoding.ASCII.GetString(d, 0, counter);
-            //    history.Text += "response\n" + response + "\n;";
-            //    if (response.IndexOf("\r\n\r\n") > -1 || response.Length > 2048)
-            //            break;
-            //}
             string data = convertBoard();
             stream.Flush();
+            analyser();
+            data = convertBoard();
             stream.Write(Encoding.ASCII.GetBytes(data), 0, Encoding.ASCII.GetBytes(data).Length);
             stream.Flush();
             response = "";
@@ -2487,9 +2482,7 @@ namespace Шашечки
                         break;
             }
             convertToBoard(Encoding.ASCII.GetBytes(response));
-            analyser();
-            data = convertBoard();
-            stream.Write(Encoding.ASCII.GetBytes(data), 0, Encoding.ASCII.GetBytes(data).Length);
+            
             stream.Close();
             client.Close();
         }
