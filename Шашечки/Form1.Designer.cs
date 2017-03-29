@@ -69,7 +69,7 @@
             // 
             // history
             // 
-            this.history.Location = new System.Drawing.Point(608, 111);
+            this.history.Location = new System.Drawing.Point(608, 102);
             this.history.Margin = new System.Windows.Forms.Padding(4);
             this.history.Name = "history";
             this.history.ReadOnly = true;
@@ -138,10 +138,11 @@
             // 
             // startNewGame
             // 
-            this.startNewGame.Location = new System.Drawing.Point(608, 489);
+            this.startNewGame.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.startNewGame.Location = new System.Drawing.Point(605, 480);
             this.startNewGame.Margin = new System.Windows.Forms.Padding(4);
             this.startNewGame.Name = "startNewGame";
-            this.startNewGame.Size = new System.Drawing.Size(200, 28);
+            this.startNewGame.Size = new System.Drawing.Size(202, 28);
             this.startNewGame.TabIndex = 6;
             this.startNewGame.Text = "New game";
             this.startNewGame.UseVisualStyleBackColor = true;
@@ -149,11 +150,12 @@
             // 
             // playersname
             // 
+            this.playersname.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.playersname.Location = new System.Drawing.Point(609, 13);
             this.playersname.Margin = new System.Windows.Forms.Padding(4);
             this.playersname.Name = "playersname";
             this.playersname.ReadOnly = true;
-            this.playersname.Size = new System.Drawing.Size(188, 22);
+            this.playersname.Size = new System.Drawing.Size(190, 23);
             this.playersname.TabIndex = 7;
             // 
             // label1
@@ -376,9 +378,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(732, 524);
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.button1.Location = new System.Drawing.Point(661, 515);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(77, 22);
             this.button1.TabIndex = 28;
             this.button1.Text = "Connect";
             this.button1.UseVisualStyleBackColor = true;
@@ -386,7 +389,7 @@
             // 
             // timer1
             // 
-            this.timer1.Interval = 10000;
+            this.timer1.Interval = 6500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1
