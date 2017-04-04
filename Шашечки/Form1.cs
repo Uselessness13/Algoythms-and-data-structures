@@ -24,6 +24,7 @@ namespace Шашечки
         private String type;
         private Random random = new Random();
         TcpClient client;
+        string colour;
         public Form1(String player)
         {
             type = player;
@@ -114,7 +115,7 @@ namespace Шашечки
         {
             if (type == "tour")
             {
-                
+
             }
             if (type == "mem")
             {
@@ -248,7 +249,7 @@ namespace Шашечки
                     }
                 }
             }
-                
+
             if (type == "mec")
             {
                 int y = ((Cursor.Position.X + 20 - this.DesktopLocation.X) / 50) - 1;
@@ -304,7 +305,8 @@ namespace Шашечки
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
                         }
-                        analyser();
+                        if (!checkForHighlith())
+                            analyser();
                     }
                     if (board[current[0], current[1]].Image == whitesh.Image && x == 0)
                     {
@@ -317,7 +319,8 @@ namespace Шашечки
                         numberOfStep++;
                         player = numberOfStep % 2 != 0 ? "white" : "black";
                         playersname.Text = player + " turn";
-                        analyser();
+                        if (!checkForHighlith())
+                            analyser();
                     }
                     if (board[current[0], current[1]].Image == whiteQueen.Image)
                     {
@@ -337,25 +340,21 @@ namespace Шашечки
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
                         }
-                        analyser();
+                        if (!checkForHighlith())
+                            analyser();
                     }
                 }
             }
             judje();
             if (whiteAte.ToString() == "12")
-            {
                 MessageBox.Show("White win!");
-            }
-
             if (blackAte.ToString() == "12")
-            {
                 MessageBox.Show("Black win!");
-            }
         }
-        
+
         public void judje()
         {
-            int w=0, b=0;
+            int w = 0, b = 0;
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                 {
@@ -369,79 +368,88 @@ namespace Шашечки
         public void analyser()
         {
             List<int[]> coords = new List<int[]>();
-
-            for (int i = 0; i < 8; i++)
-                for (int j = 0; j < 8; j++)
-                    if (board[i, j].Image == blacksh.Image | board[i, j].Image == blackQueen.Image)
-                    {
-                        int[] cur = { i, j };
-                        coords.Add(cur);
-                    }
-            List<AICheckers> ocenki = new List<AICheckers>();
-            for (int i = 0; i < coords.Count; i++)
+            if (colour == "black")
             {
-                var step = allhods(coords[i][0], coords[i][1]);
-                for (int j = 0; j < step.Count; j++)
-                    ocenki.Add(step[j]);
-            }           
-
-            List<AICheckers> allh = new List<AICheckers>();
-            for (int i = 0; i < ocenki.Count; i++)
-                if (ocenki[i].ocenka != 0)
-                    allh.Add(ocenki[i]);
-
-
-            foreach (AICheckers h in allh)
-                Console.WriteLine(h.ocenka + " | " + h.firstXPos + " ; " + h.firstYPos + " | " + h.secondXPos + " ; " + h.secondYPos);
-
-            Console.WriteLine("after sorting");
-
-            var all = sorter(allh);
-            
-            foreach (AICheckers h in all)
-                Console.WriteLine(h.ocenka + " | " + h.firstXPos + " ; " + h.firstYPos + " | " + h.secondXPos + " ; " + h.secondYPos);
-
-            if (!checkForHighlith() && all.Count > 0)
-            {
-                int curate = blackAte;
-                Console.Write(curate);
-                Console.Write(" curate\n");
-                int r = random.Next(all.Count);
-                if (board[all[r].firstXPos, all[r].firstYPos].Image == blacksh.Image)
-                    blackStepper(all[r].firstXPos, all[r].firstYPos, all[r].secondXPos, all[r].secondYPos);
-                if (board[all[r].firstXPos, all[r].firstYPos].Image == blackQueen.Image)
-                    blackQueenStepper(all[r].firstXPos, all[r].firstYPos, all[r].secondXPos, all[r].secondYPos);
-                history.Text += hod[all[r].firstXPos].ToString() + (all[r].firstYPos - 1).ToString() + " -> " + hod[all[r].secondXPos].ToString() + (all[r].secondYPos - 1).ToString() + "\n";
-                Console.WriteLine("MADE STEP");
-                if (curate - blackAte == 0 || !checkIfCanEat(all[r].secondXPos, all[r].secondYPos))
+                for (int i = 0; i < 8; i++)
+                    for (int j = 0; j < 8; j++)
+                        if (board[i, j].Image == blacksh.Image || board[i, j].Image == blackQueen.Image)
+                        {
+                            int[] cur = { i, j };
+                            coords.Add(cur);
+                        }
+                List<AICheckers> ocenki = new List<AICheckers>();
+                for (int i = 0; i < coords.Count; i++)
                 {
-                    Console.WriteLine("MADE STEP without eating");
-                    numberOfStep++;
-                    player = numberOfStep % 2 != 0 ? "white" : "black";
-                    playersname.Text = player + " turn";
+                    var step = allhods(coords[i][0], coords[i][1]);
+                    for (int j = 0; j < step.Count; j++)
+                        ocenki.Add(step[j]);
                 }
-                else if (curate != blackAte && checkIfCanEat(all[0].secondXPos, all[0].secondYPos))
+
+                List<AICheckers> allh = new List<AICheckers>();
+                for (int i = 0; i < ocenki.Count; i++)
+                    if (ocenki[i].ocenka != 0)
+                        allh.Add(ocenki[i]);
+
+                Console.WriteLine("allh.count = " + allh.Count);
+                foreach (AICheckers h in allh)
+                    Console.WriteLine(h.ocenka + " | " + h.firstXPos + " ; " + h.firstYPos + " | " + h.secondXPos + " ; " + h.secondYPos);
+
+                Console.WriteLine("after sorting");
+
+                var all = sorter(allh);
+                Console.WriteLine("all.count = " + all.Count);
+                foreach (AICheckers h in all)
+                    Console.WriteLine(h.ocenka + " | " + h.firstXPos + " ; " + h.firstYPos + " | " + h.secondXPos + " ; " + h.secondYPos);
+                cleaner();
+                if (!checkForHighlith() && all.Count > 0)
                 {
-                    while (curate != blackAte && checkIfCanEat(all[0].secondXPos, all[0].secondYPos))
+                    int curate = blackAte;
+                    Console.Write(curate);
+                    Console.Write(" curate\n");
+                    int r = random.Next(all.Count);
+                    if (board[all[r].firstXPos, all[r].firstYPos].Image == blacksh.Image)
+                        blackStepper(all[r].firstXPos, all[r].firstYPos, all[r].secondXPos, all[r].secondYPos);
+                    if (board[all[r].firstXPos, all[r].firstYPos].Image == blackQueen.Image)
+                        blackQueenStepper(all[r].firstXPos, all[r].firstYPos, all[r].secondXPos, all[r].secondYPos);
+
+                    history.Text += hod[all[r].firstXPos].ToString() + (all[r].firstYPos - 1).ToString() + " -> " + hod[all[r].secondXPos].ToString() + (all[r].secondYPos - 1).ToString() + "\n";
+                    Console.WriteLine("MADE STEP");
+                    Console.WriteLine(all[r].ocenka + " | " + all[r].firstXPos + " ; " + all[r].firstYPos + " | " + all[r].secondXPos + " ; " + all[r].secondYPos);
+                    if (curate - blackAte == 0 || !checkIfCanEat(all[r].secondXPos, all[r].secondYPos))
                     {
-                        curate = blackAte;
-                        bool wp = board[all[0].secondXPos, all[0].secondYPos].Image == blacksh.Image;
-                        var hodiks = allhodstoEat(all[0].secondXPos, all[0].secondYPos);
-
-                        var hodik = sorter(hodiks);   
-                        
-                        for (int i = 0; i < hodik.Count; i++)
-                            Console.WriteLine(hodik[i].ocenka + " | " + hodik[i].firstXPos + " | " + hodik[i].firstYPos + " | " + hodik[i].secondXPos + " | " + hodik[i].secondYPos);
-                        r = random.Next(hodik.Count);
-                        makestep(hodik[r].firstXPos, hodik[r].firstYPos, hodik[r].secondXPos, hodik[r].secondYPos);
-                        foreach (AICheckers h in hodik)
-                            Console.WriteLine(h.ocenka + " | " + h.firstXPos + " ; " + h.firstYPos + " | " + h.secondXPos + " ; " + h.secondYPos);
-                        if (hodik[r].secondXPos == 7 & wp) break;
+                        Console.WriteLine(curate - blackAte == 0 ? "MADE STEP without eating" : "");
+                        numberOfStep++;
+                        player = numberOfStep % 2 != 0 ? "white" : "black";
+                        playersname.Text = player + " turn";
                     }
-                    numberOfStep++;
-                    player = numberOfStep % 2 != 0 ? "white" : "black";
-                    playersname.Text = player + " turn";
+                    else if (curate != blackAte && checkIfCanEat(all[0].secondXPos, all[0].secondYPos))
+                    {
+                        while (curate != blackAte && checkIfCanEat(all[0].secondXPos, all[0].secondYPos))
+                        {
+                            curate = blackAte;
+                            bool wp = board[all[0].secondXPos, all[0].secondYPos].Image == blacksh.Image;
+                            var hodiks = allhodstoEat(all[0].secondXPos, all[0].secondYPos);
+
+                            var hodik = sorter(hodiks);
+
+                            for (int i = 0; i < hodik.Count; i++)
+                                Console.WriteLine(hodik[i].ocenka + " | " + hodik[i].firstXPos + " | " + hodik[i].firstYPos + " | " + hodik[i].secondXPos + " | " + hodik[i].secondYPos);
+                            r = random.Next(hodik.Count);
+                            Console.WriteLine("after sorting");
+                            makestep(hodik[r].firstXPos, hodik[r].firstYPos, hodik[r].secondXPos, hodik[r].secondYPos);
+                            foreach (AICheckers h in hodik)
+                                Console.WriteLine(h.ocenka + " | " + h.firstXPos + " ; " + h.firstYPos + " | " + h.secondXPos + " ; " + h.secondYPos);
+                            if (hodik[r].secondXPos == 7 & wp) break;
+                        }
+                        numberOfStep++;
+                        player = numberOfStep % 2 != 0 ? "white" : "black";
+                        playersname.Text = player + " turn";
+                    }
                 }
+            }
+            if (colour == "white")
+            {
+                //нормальный ИИ за белых
             }
             judje();
         }
@@ -449,27 +457,31 @@ namespace Шашечки
         public List<AICheckers> sorter(List<AICheckers> list)
         {
             List<AICheckers> newlist = new List<AICheckers>();
-
-            for (int i = 0; i < list.Count; i++)
-                for (int j = 0; j < list.Count - i - 1; j++)
-                    if (list[j].ocenka < list[j + 1].ocenka)
-                    {
-                        AICheckers temp = list[j];
-                        list[j] = list[j + 1];
-                        list[j + 1] = temp;
-                    }
-            for (int i = 0; i < list.Count; i++)
-                if (list[i].ocenka == list[0].ocenka)
-                    newlist.Add(list[i]);
-            return newlist;
+            if (list.Count > 1)
+            {
+                for (int i = 0; i < list.Count; i++)
+                    for (int j = 0; j < list.Count - i - 1; j++)
+                        if (list[j].ocenka < list[j + 1].ocenka)
+                        {
+                            AICheckers temp = list[j];
+                            list[j] = list[j + 1];
+                            list[j + 1] = temp;
+                        }
+                for (int i = 0; i < list.Count; i++)
+                    if (list[i].ocenka == list[0].ocenka)
+                        newlist.Add(list[i]);
+                return newlist;
+            }
+            else
+                return list;
         }
 
         public void makestep(int x1, int y1, int x2, int y2)
         {
             if (board[x1, y1].Image == blacksh.Image)
                 blackStepper(x1, y1, x2, y2);
-            if (board[x1,y1].Image == blackQueen.Image)
-                blackQueenStepper(x1,y1,x2,y2);
+            if (board[x1, y1].Image == blackQueen.Image)
+                blackQueenStepper(x1, y1, x2, y2);
             judje();
         }
 
@@ -699,8 +711,16 @@ namespace Шашечки
             {
                 if (x > 1 && y > 1 && x < 7 && y < 7)
                 {
-                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
-                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                    if (board[x + 1, y + 1].Image == null)
+                    {
+                        hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                        Console.WriteLine("oc = 1+" + (checkIfCantDieINT(x + 1, y + 1, x, y)) + " | " + x + " ; " + y + " | " + (x + 1) + " ; " + (y + 1));
+                    }
+                    if (board[x + 1, y - 1].Image == null)
+                    {
+                        hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                        Console.WriteLine("oc = 1+" + (checkIfCantDieINT(x + 1, y - 1, x, y)) + " | " + x + " ; " + y + " | " + (x + 1) + " ; " + (y - 1));
+                    }
 
                     if (board[x + 1, y + 1].Image == whitesh.Image)
                         if (checkIfCanEat(x, y))
@@ -730,10 +750,21 @@ namespace Шашечки
                         if (checkIfCanEat(x, y))
                             hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
                 }
+                if (x == 1 && y == 1)
+                {
+                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                    if (board[x + 1, y + 1].Image == whitesh.Image)
+                        if (checkIfCanEat(x, y))
+                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                    if (board[x + 1, y + 1].Image == whiteQueen.Image)
+                        if (checkIfCanEat(x, y))
+                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                }
                 if (x <= 1 && y > 1 && y < 7)
                 {
-                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
-                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
                     if (board[x + 1, y + 1].Image == whitesh.Image)
                         if (checkIfCanEat(x, y))
                             hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
@@ -750,7 +781,7 @@ namespace Шашечки
                 }
                 if (y <= 1 && x > 1 && x < 7)
                 {
-                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
                     if (board[x + 1, y + 1].Image == whitesh.Image)
                         if (checkIfCanEat(x, y))
                             hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
@@ -764,12 +795,11 @@ namespace Шашечки
                     if (board[x - 1, y + 1].Image == whiteQueen.Image)
                         if (checkIfCanEat(x, y))
                             hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
-
                 }
 
-                if (y >= 6 && x > 1 && x < 7)
+                if (y >= 6 && x >= 1 && x <= 7)
                 {
-                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
                     if (board[x + 1, y - 1].Image == whitesh.Image)
                         if (checkIfCanEat(x, y))
                             hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
@@ -786,7 +816,7 @@ namespace Шашечки
                 }
                 if (y <= 1 && x <= 1)
                 {
-                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
                     if (board[x + 1, y + 1].Image == whitesh.Image)
                         if (checkIfCanEat(x, y))
                             hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
@@ -794,9 +824,10 @@ namespace Шашечки
                         if (checkIfCanEat(x, y))
                             hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
                 }
+
                 if (y >= 6 && x <= 1)
                 {
-                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1,x,y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
                     if (board[x + 1, y - 1].Image == whitesh.Image)
                         if (checkIfCanEat(x, y))
                             hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
@@ -805,24 +836,33 @@ namespace Шашечки
                             hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
                 }
                 if (y <= 1 && x >= 6)
-                    if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
+                {
+                    if (board[x - 1, y - 1].Image == whitesh.Image)
                         if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (board[x - 1, y + 1].Image == whiteQueen.Image ? 1 : 0) + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                    if (board[x - 1, y - 1].Image == whiteQueen.Image)
+                        if (checkIfCanEat(x, y))
+                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                }
                 if (y >= 6 && x >= 6)
-                    if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
+                {
+                    if (board[x - 1, y - 1].Image == whitesh.Image)
                         if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (board[x - 1, y - 1].Image == whiteQueen.Image ? 1 : 0) + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                    if (board[x - 1, y - 1].Image == whiteQueen.Image)
+                        if (checkIfCanEat(x, y))
+                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                }
             }
-            if (board[x,y].Image == blackQueen.Image)
+            if (board[x, y].Image == blackQueen.Image)
             {
                 int ulx = x, uly = y;
-                int  ulanswer = 0;
+                int ulanswer = 0;
                 while (ulx >= 0 && uly >= 0)
                 {
                     if (board[ulx, uly].Image == null)
                     {
                         hods.Add(new AICheckers { ocenka = ulanswer + 2, firstXPos = x, firstYPos = y, secondXPos = ulx, secondYPos = uly });
-                        cleaner();
                     }
                     else
                     {
@@ -837,12 +877,12 @@ namespace Шашечки
                             {
                                 if (board[ulx - 1, uly - 1].Image == null & (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image))
                                 {
-                                    hods.Add(new AICheckers { ocenka = ulanswer + 4 + (blackQueenEatChecker(ulx, uly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = ulx - 1, secondYPos = uly - 1 });
+                                    hods.Add(new AICheckers { ocenka = ulanswer + 4 + (board[ulx, uly].Image == whiteQueen.Image ? 1 : 0) + (blackQueenEatChecker(ulx, uly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = ulx - 1, secondYPos = uly - 1 });
                                     cleaner();
                                     break;
                                 }
-                                else break;
                             }
+                            else break;
                         }
                     }
                     ulx--; uly--;
@@ -854,26 +894,24 @@ namespace Шашечки
                     if (board[urx, ury].Image == null)
                     {
                         hods.Add(new AICheckers { ocenka = uranswer + 2, firstXPos = x, firstYPos = y, secondXPos = urx, secondYPos = ury });
-                        cleaner();
                     }
                     else
                     {
                         if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
-                        {
                             if (ury != y && urx != x) break;
-                        }
+
                         if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
                         {
                             if (urx >= 1 && ury <= 6)
                             {
-                                if (board[urx - 1, ury + 1].Image == null & (board[urx,ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image))
+                                if (board[urx - 1, ury + 1].Image == null & (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image))
                                 {
-                                    hods.Add(new AICheckers { ocenka = uranswer + 4 + (blackQueenEatChecker(urx, ury) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = urx - 1, secondYPos = ury + 1 });
+                                    hods.Add(new AICheckers { ocenka = uranswer + 4 + (board[urx, ury].Image == whiteQueen.Image ? 1 : 0) + (blackQueenEatChecker(urx, ury) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = urx - 1, secondYPos = ury + 1 });
                                     cleaner();
                                     break;
                                 }
-                                else break;
                             }
+                            else break;
                         }
                     }
                     urx--; ury++;
@@ -886,7 +924,6 @@ namespace Шашечки
                     if (board[dlx, dly].Image == null)
                     {
                         hods.Add(new AICheckers { ocenka = dlanswer + 2, firstXPos = x, firstYPos = y, secondXPos = dlx, secondYPos = dly });
-                        cleaner();
                     }
                     else
                     {
@@ -896,28 +933,30 @@ namespace Шашечки
                         }
                         if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
                         {
-                            if (dlx <= 6 && dly >= 1 & (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image))
+                            if (dlx <= 6 && dly >= 1)
                             {
-                                if (board[dlx + 1, dly - 1].Image == null)
+                                if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
                                 {
-                                    hods.Add(new AICheckers { ocenka = dlanswer + 4 + (blackQueenEatChecker(dlx, dly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = dlx + 1, secondYPos = dly - 1 });
-                                    cleaner();
-                                    break;
+                                    if (board[dlx + 1, dly - 1].Image == null)
+                                    {
+                                        hods.Add(new AICheckers { ocenka = dlanswer + 4 + (blackQueenEatChecker(dlx, dly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = dlx + 1, secondYPos = dly - 1 });
+                                        cleaner();
+                                        break;
+                                    }
                                 }
-                                else break;
                             }
+                            else break;
                         }
                     }
                     dlx++; dly--;
                 }
                 int drx = x, dry = y;
-                int  dranswer = 0;
+                int dranswer = 0;
                 while (drx <= 7 && dry <= 7)
                 {
                     if (board[drx, dry].Image == null)
                     {
                         hods.Add(new AICheckers { ocenka = dranswer + 2, firstXPos = x, firstYPos = y, secondXPos = drx, secondYPos = dry });
-                        cleaner();
                     }
                     else
                     {
@@ -927,16 +966,14 @@ namespace Шашечки
                         }
                         if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
                         {
-                            if (drx <= 6 && dry <= 6 & (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image))
-                            {
-                                if (board[drx + 1, dry + 1].Image == null)
-                                {
-                                    hods.Add(new AICheckers { ocenka = dranswer + 4 + (blackQueenEatChecker(drx, dry) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = drx + 1, secondYPos = dry + 1 });
-                                    cleaner();
-                                    break;
-                                }
-                                else break;
-                            }
+                            if (drx <= 6 && dry <= 6)
+                                if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
+                                    if (board[drx + 1, dry + 1].Image == null)
+                                    {
+                                        hods.Add(new AICheckers { ocenka = dranswer + 4 + (board[drx, dry].Image == whiteQueen.Image ? 1 : 0) + (blackQueenEatChecker(drx, dry) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = drx + 1, secondYPos = dry + 1 });
+                                        break;
+                                    }
+                                    else break;
                         }
                     }
                     drx++; dry++;
@@ -1000,36 +1037,17 @@ namespace Шашечки
         }
         public bool checkIfCantDie(int x, int y)
         {
-            if (x >=1 && x <=6 && y >= 1 && y <= 6)
-            {
-                if ((board[x - 1, y - 1].Image == whiteQueen.Image | board[x - 1, y - 1].Image == whitesh.Image) && board[x+1, y+1].Image == null)
-                    return false;
-                if ((board[x - 1, y + 1].Image == whiteQueen.Image | board[x - 1, y + 1].Image == whitesh.Image) && board[x + 1, y - 1].Image == null)
-                    return false;
-                if ((board[x + 1, y - 1].Image == whiteQueen.Image | board[x + 1, y - 1].Image == whitesh.Image) && board[x - 1, y + 1].Image == null)
-                    return false;
-                if ((board[x + 1, y + 1].Image == whiteQueen.Image | board[x + 1, y + 1].Image == whitesh.Image) && board[x - 1, y - 1].Image == null)
-                    return false;
-
-            }
-            return true;
-        }
-
-        public int checkIfCantDieINT(int x, int y)
-        {
             bool answer = false;
-            int ans = 0;
             if (x >= 1 && x <= 6 && y >= 1 && y <= 6)
             {
                 if ((board[x - 1, y - 1].Image == whiteQueen.Image | board[x - 1, y - 1].Image == whitesh.Image) && board[x + 1, y + 1].Image == null)
-                    ans = -1;
+                    return false;
                 if ((board[x - 1, y + 1].Image == whiteQueen.Image | board[x - 1, y + 1].Image == whitesh.Image) && board[x + 1, y - 1].Image == null)
-                    ans = -1;
+                    return false;
                 if ((board[x + 1, y - 1].Image == whiteQueen.Image | board[x + 1, y - 1].Image == whitesh.Image) && board[x - 1, y + 1].Image == null)
-                    ans = -1;
+                    return false;
                 if ((board[x + 1, y + 1].Image == whiteQueen.Image | board[x + 1, y + 1].Image == whitesh.Image) && board[x - 1, y - 1].Image == null)
-                    ans = -1;
-
+                    return false;
                 int ulx = x, uly = y;
                 bool ulanswer = false;
                 while (ulx >= 0 && uly >= 0)
@@ -1138,10 +1156,144 @@ namespace Шашечки
                 }
 
                 answer = ulanswer | uranswer | dlanswer | dranswer;
+                if (answer != false)
+                    return false;
             }
-            if (answer == true)
-                ans = -2;
-            return ans;
+            return true;
+        }
+
+        public int checkIfCantDieINT(int x1, int y1, int x, int y)
+        {
+            bool answer = false;
+            bool asn = true;
+            int ans = 0;
+            if (x >= 1 && x <= 6 && y >= 1 && y <= 6)
+            {
+                if ((board[x - 1, y - 1].Image == whiteQueen.Image | board[x - 1, y - 1].Image == whitesh.Image) && board[x + 1, y + 1].Image == board[x, y].Image)
+                    asn = false;
+                if ((board[x - 1, y + 1].Image == whiteQueen.Image | board[x - 1, y + 1].Image == whitesh.Image) && board[x + 1, y - 1].Image == board[x, y].Image)
+                    asn = false;
+                if ((board[x + 1, y - 1].Image == whiteQueen.Image | board[x + 1, y - 1].Image == whitesh.Image) && board[x - 1, y + 1].Image == board[x, y].Image)
+                    asn = false;
+                if ((board[x + 1, y + 1].Image == whiteQueen.Image | board[x + 1, y + 1].Image == whitesh.Image) && board[x - 1, y - 1].Image == board[x, y].Image)
+                    asn = false;
+
+                int ulx = x, uly = y;
+                bool ulanswer = false;
+                while (ulx >= 0 && uly >= 0)
+                {
+                    if (board[ulx, uly].Image == null) { }
+                    else
+                    {
+                        if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image)
+                        {
+                            if (uly != y && ulx != x) break;
+                        }
+
+                        if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image)
+                        {
+                            if (ulx >= 1 && uly >= 1)
+                            {
+                                if (board[x + 1, y + 1].Image == null)
+                                {
+                                    ulanswer = true;
+                                    break;
+                                }
+                                else break;
+                            }
+                        }
+                    }
+                    ulx--; uly--;
+                }
+                int urx = x, ury = y;
+                bool uranswer = false;
+                while (urx >= 0 && ury <= 7)
+                {
+                    if (board[urx, ury].Image == null) { }
+                    else
+                    {
+                        if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
+                        {
+                            if (ury != y && urx != x) break;
+                        }
+                        if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
+                        {
+                            if (urx >= 1 && ury <= 6)
+                            {
+                                if (board[x + 1, y - 1].Image == null)
+                                {
+                                    uranswer = true;
+                                    break;
+                                }
+                                else break;
+                            }
+                        }
+                    }
+                    urx--; ury++;
+                }
+
+                int dlx = x, dly = y;
+                bool dlanswer = false;
+                while (dlx <= 7 && dly >= 0)
+                {
+                    if (board[dlx, dly].Image == null) { }
+                    else
+                    {
+                        if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image)
+                        {
+                            if (dly != y && dlx != x) break;
+                        }
+                        if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
+                        {
+                            if (dlx <= 6 && dly >= 1)
+                            {
+                                if (board[x - 1, y + 1].Image == null)
+                                {
+                                    dlanswer = true;
+                                    break;
+                                }
+                                else break;
+                            }
+                        }
+                    }
+                    dlx++; dly--;
+                }
+                int drx = x, dry = y;
+                bool dranswer = false;
+                while (drx <= 7 && dry <= 7)
+                {
+                    if (board[drx, dry].Image == null) { }
+                    else
+                    {
+                        if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
+                        {
+                            if (dry != y && drx != x) break;
+                        }
+                        if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
+                        {
+                            if (drx <= 6 && dry <= 6)
+                            {
+                                if (board[x - 1, y - 1].Image == null)
+                                {
+                                    dranswer = true;
+                                    break;
+                                }
+                                else break;
+                            }
+                        }
+                    }
+                    drx++; dry++;
+                }
+
+                answer = !(ulanswer | uranswer | dlanswer | dranswer);
+            }
+            else asn = true;
+
+            Console.WriteLine("death = "+ asn);
+            //if (!asn)
+            //    asn = answer;
+
+            return asn ? 1: -1;/* && !answer ? -1 : asn ? 1: 0*/
         }
 
         public int checkIfCanEatAndCantDie(int x, int y)
@@ -1272,6 +1424,8 @@ namespace Шашечки
                 if (board[x + 1, y - 1].Image == blacksh.Image | board[x + 1, y - 1].Image == blackQueen.Image)
                     whiteEater(x, y);
             }
+            if ((y >= 6 && x <= 1) && (board[x - 1, y - 1].Image == blacksh.Image || board[x - 1, y - 1].Image == blackQueen.Image))
+                whiteEater(x, y);
             if ((y <= 1 && x <= 6) && (board[x + 1, y + 1].Image == blacksh.Image | board[x + 1, y + 1].Image == blackQueen.Image))
                 whiteEater(x, y);
             if (y <= 1 && x >= 1 && board[x - 1, y + 1].Image == null)
@@ -2338,7 +2492,7 @@ namespace Шашечки
                     board[xk + 1, yk + 1].Image = null;
                 }
             }
-            if (xk == 7) 
+            if (xk == 7)
             {
                 board[xk, yk].Image = blackQueen.Image;
             }
@@ -2407,7 +2561,7 @@ namespace Шашечки
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                     board[i, j].Image = null;
-               
+
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                 {
@@ -2439,18 +2593,19 @@ namespace Шашечки
         private void startNewGame_Click(object sender, EventArgs e)
         {
             newGame();
+            timer1.Enabled = false;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            type = "tour";
+            colour = "black";
             connection();
         }
 
         public string convertBoard()
         {
             string pole = "";
-            for (int i =0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                 {
                     if (board[i, j].Image == whitesh.Image)
@@ -2474,24 +2629,24 @@ namespace Шашечки
             string pole = rs(pole1);
             history.Text += pole + "\n";
             if (pole1 != "")
-                for(int i = 0; i < pole.Length; i++)
-                    board[i /8, i % 8].Image = pole[i] == '1' ? whitesh.Image : pole[i] == '2' ? blacksh.Image : pole[i] == '3' ? whiteQueen.Image : pole[i] == '4' ? blackQueen.Image : null;
+                for (int i = 0; i < pole.Length; i++)
+                    board[i / 8, i % 8].Image = pole[i] == '1' ? whitesh.Image : pole[i] == '2' ? blacksh.Image : pole[i] == '3' ? whiteQueen.Image : pole[i] == '4' ? blackQueen.Image : null;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            net();   
+            net();
         }
 
         public void net()
         {
             try
             {
-                client = new TcpClient("192.168.43.24", 8005);
+                client = new TcpClient(ip.Text, 8005);
             }
             catch (SocketException s)
             {
-                history.Text += "Error with connection\n"+s.Message;
+                history.Text += "Error with connection\n" + s.Message;
                 net();
             }
 
@@ -2500,11 +2655,10 @@ namespace Шашечки
                 if (client.Connected)
                 {
                     history.Text += "connected\n";
-                    type = "tour";
 
                     NetworkStream stream = client.GetStream();
 
-                    string colur = "black\r\n\r\n";
+                    string colur = colour+"\r\n\r\n";
                     stream.Write(Encoding.ASCII.GetBytes(colur), 0, Encoding.ASCII.GetBytes(colur).Length);
 
                     string response = "";
@@ -2517,6 +2671,7 @@ namespace Шашечки
 
                     if (response == "BAD\r\n\r\n")
                     {
+                        Console.WriteLine("end");
                         stream.Flush();
                         stream.Close();
                         client.Close();
@@ -2532,17 +2687,6 @@ namespace Шашечки
                     stream.Write(Encoding.ASCII.GetBytes(data), 0, Encoding.ASCII.GetBytes(data).Length);
                     stream.Flush();
                     response = "";
-                    d = new byte[1024];
-                    int counter2 = 0;
-
-                    while ((counter2 = client.GetStream().Read(d, 0, d.Length)) > 0)
-                    {
-                        response += Encoding.ASCII.GetString(d, 0, counter2);
-                        history.Text += "response\n" + response + "\n;";
-                        if (response.IndexOf("\r\n\r\n") > -1)
-                            break;
-                    }
-                    convertToBoard(response);
 
                     stream.Close();
                     client.Close();
@@ -2559,6 +2703,12 @@ namespace Шашечки
             char[] arr = s.ToCharArray();
             Array.Reverse(arr);
             return new string(arr);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            colour = "white";
+            connection();
         }
     }
 }

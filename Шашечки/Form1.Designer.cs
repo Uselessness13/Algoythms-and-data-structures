@@ -60,6 +60,9 @@
             this.label18 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.button2 = new System.Windows.Forms.Button();
+            this.ip = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.whiteQueen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.blackQueen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.highlight)).BeginInit();
@@ -73,7 +76,7 @@
             this.history.Margin = new System.Windows.Forms.Padding(4);
             this.history.Name = "history";
             this.history.ReadOnly = true;
-            this.history.Size = new System.Drawing.Size(199, 370);
+            this.history.Size = new System.Drawing.Size(199, 341);
             this.history.TabIndex = 0;
             this.history.Text = "";
             // 
@@ -139,10 +142,10 @@
             // startNewGame
             // 
             this.startNewGame.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.startNewGame.Location = new System.Drawing.Point(605, 480);
+            this.startNewGame.Location = new System.Drawing.Point(608, 451);
             this.startNewGame.Margin = new System.Windows.Forms.Padding(4);
             this.startNewGame.Name = "startNewGame";
-            this.startNewGame.Size = new System.Drawing.Size(202, 28);
+            this.startNewGame.Size = new System.Drawing.Size(199, 28);
             this.startNewGame.TabIndex = 6;
             this.startNewGame.Text = "New game";
             this.startNewGame.UseVisualStyleBackColor = true;
@@ -379,11 +382,11 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.button1.Location = new System.Drawing.Point(661, 515);
+            this.button1.Location = new System.Drawing.Point(730, 515);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(77, 22);
+            this.button1.Size = new System.Drawing.Size(77, 29);
             this.button1.TabIndex = 28;
-            this.button1.Text = "Connect";
+            this.button1.Text = "Black";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
@@ -392,11 +395,42 @@
             this.timer1.Interval = 6500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.button2.Location = new System.Drawing.Point(608, 515);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(77, 29);
+            this.button2.TabIndex = 29;
+            this.button2.Text = "White";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // ip
+            // 
+            this.ip.Location = new System.Drawing.Point(687, 487);
+            this.ip.Name = "ip";
+            this.ip.Size = new System.Drawing.Size(120, 22);
+            this.ip.TabIndex = 30;
+            this.ip.Text = "127.0.0.1";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(606, 490);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(58, 17);
+            this.label19.TabIndex = 31;
+            this.label19.Text = "Enter IP";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(810, 546);
+            this.Controls.Add(this.label19);
+            this.Controls.Add(this.ip);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.label17);
@@ -473,6 +507,9 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox ip;
+        private System.Windows.Forms.Label label19;
     }
 }
 
