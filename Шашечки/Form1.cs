@@ -370,13 +370,7 @@ namespace Шашечки
             List<int[]> coords = new List<int[]>();
             if (colour == "black")
             {
-                for (int i = 0; i < 8; i++)
-                    for (int j = 0; j < 8; j++)
-                        if (board[i, j].Image == blacksh.Image || board[i, j].Image == blackQueen.Image)
-                        {
-                            int[] cur = { i, j };
-                            coords.Add(cur);
-                        }
+                coords = searchForCheckers();
                 List<AICheckers> ocenki = new List<AICheckers>();
                 for (int i = 0; i < coords.Count; i++)
                 {
@@ -450,8 +444,35 @@ namespace Шашечки
             if (colour == "white")
             {
                 //нормальный ИИ за белых
+                List<int[]> checkers = searchForCheckers(); // Ищем все белые шашки
+                List<AICheckers> possibleMoves = new List<AICheckers>();
+                for (int i = 0; i < checkers.Count; i++)
+                {
+                    List<AICheckers> currentCheckersPossibleMoves = allhods(checkers[i][0], checkers[i][1]); // Находим все ходы конкретной шашки
+                    for (int j = 0; j < currentCheckersPossibleMoves.Count; j++)
+                        possibleMoves.Add(currentCheckersPossibleMoves[j].ocenka > 0 ? currentCheckersPossibleMoves[j] : null); // Добавляем их в список всех ходов
+                }
+                possibleMoves.RemoveAll(null); //Чистим от "плохих" ходов
+
             }
             judje();
+        }
+
+
+        public List<int[]> searchForCheckers()
+        {
+            List<int[]> checkers = new List<int[]>();
+            if (colour == "white")
+                for (int i = 0; i < 8; i++)
+                    for (int j = 0; j < 8; j++)
+                        if (board[i, j].Image == whitesh.Image || board[i, j].Image == whiteQueen.Image)
+                            checkers.Add(new int[] { i, j });
+            if (colour == "black")
+                for (int i = 0; i < 8; i++)
+                    for (int j = 0; j < 8; j++)
+                        if (board[i, j].Image == blacksh.Image || board[i, j].Image == blackQueen.Image)
+                            checkers.Add(new int[] { i, j });
+            return checkers;
         }
 
         public List<AICheckers> sorter(List<AICheckers> list)
@@ -478,10 +499,20 @@ namespace Шашечки
 
         public void makestep(int x1, int y1, int x2, int y2)
         {
-            if (board[x1, y1].Image == blacksh.Image)
-                blackStepper(x1, y1, x2, y2);
-            if (board[x1, y1].Image == blackQueen.Image)
-                blackQueenStepper(x1, y1, x2, y2);
+            if (colour == "white")
+            {
+                if (board[x1, y1].Image == whitesh.Image)
+                    whiteStepper(x1, y1, x2, y2);
+                if (board[x1, y1].Image == whiteQueen.Image)
+                    whiteQueenStepper(x1, y1, x2, y2);
+            }
+            if (colour == "black")
+            {
+                if (board[x1, y1].Image == blacksh.Image)
+                    blackStepper(x1, y1, x2, y2);
+                if (board[x1, y1].Image == blackQueen.Image)
+                    blackQueenStepper(x1, y1, x2, y2);
+            }
             judje();
         }
 
@@ -502,193 +533,200 @@ namespace Шашечки
         public List<AICheckers> allhodstoEat(int x, int y)
         {
             List<AICheckers> hods = new List<AICheckers>();
-            if (board[x, y].Image == blacksh.Image)
+            if (colour == "white")
             {
-                if (x > 1 && y > 1 && x < 7 && y < 7)
-                {
-                    if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                        {
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-                        }
-                    if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                        {
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-                        }
-                    if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                        {
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
-                        }
-                    if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                        {
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
-                        }
-                }
-                if (x <= 1 && y > 1 && y < 7)
-                {
-                    if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                        {
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-                        }
-                    if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                        {
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-                        }
-                }
-                if (y <= 1 && x > 1 && x < 7)
-                {
-                    if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-                    if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
-                }
-
-                if (y >= 6 && x > 1 && x < 7)
-                {
-                    if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-                    if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
-
-                }
-                if (y <= 1 && x <= 1)
-                    if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-
-                if (y >= 6 && x <= 1)
-                    if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-                if (y <= 1 && x >= 6)
-                    if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
-                if (y >= 6 && x >= 6)
-                    if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                // ну хз
             }
-            if (board[x, y].Image == blackQueen.Image)
+            if (colour == "black")
             {
-                int ulx = x, uly = y;
-                int ulanswer = 0;
-                while (ulx >= 0 && uly >= 0)
+                if (board[x, y].Image == blacksh.Image)
                 {
-                    if (board[ulx, uly].Image == null) { }
-                    else
+                    if (x > 1 && y > 1 && x < 7 && y < 7)
                     {
-                        if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image)
-                        {
-                            if (uly != y && ulx != x) break;
-                        }
+                        if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                            {
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                            }
+                        if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                            {
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                            }
+                        if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                            {
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+                            }
+                        if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                            {
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                            }
+                    }
+                    if (x <= 1 && y > 1 && y < 7)
+                    {
+                        if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                            {
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                            }
+                        if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                            {
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                            }
+                    }
+                    if (y <= 1 && x > 1 && x < 7)
+                    {
+                        if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                        if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+                    }
 
-                        if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image)
-                        {
-                            if (ulx >= 1 && uly >= 1)
-                            {
-                                if (board[ulx - 1, uly - 1].Image == null & (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image))
-                                {
-                                    hods.Add(new AICheckers { ocenka = ulanswer + 4 + (blackQueenEatChecker(ulx, uly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = ulx - 1, secondYPos = uly - 1 });
-                                    cleaner();
-                                    break;
-                                }
-                                else break;
-                            }
-                        }
-                    }
-                    ulx--; uly--;
-                }
-                int urx = x, ury = y;
-                int uranswer = 0;
-                while (urx >= 0 && ury <= 7)
-                {
-                    if (board[urx, ury].Image == null) { }
-                    else
+                    if (y >= 6 && x > 1 && x < 7)
                     {
-                        if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
-                        {
-                            if (ury != y && urx != x) break;
-                        }
-                        if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
-                        {
-                            if (urx >= 1 && ury <= 6)
-                            {
-                                if (board[urx - 1, ury + 1].Image == null & (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image))
-                                {
-                                    hods.Add(new AICheckers { ocenka = uranswer + 4 + (blackQueenEatChecker(urx, ury) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = urx - 1, secondYPos = ury + 1 });
-                                    cleaner();
-                                    break;
-                                }
-                                else break;
-                            }
-                        }
-                    }
-                    urx--; ury++;
-                }
+                        if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                        if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
 
-                int dlx = x, dly = y;
-                int dlanswer = 0;
-                while (dlx <= 7 && dly >= 0)
-                {
-                    if (board[dlx, dly].Image == null) { }
-                    else
-                    {
-                        if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image)
-                        {
-                            if (dly != y && dlx != x) break;
-                        }
-                        if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
-                        {
-                            if (dlx <= 6 && dly >= 1 & (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image))
-                            {
-                                if (board[dlx + 1, dly - 1].Image == null)
-                                {
-                                    hods.Add(new AICheckers { ocenka = dlanswer + 4 + (blackQueenEatChecker(dlx, dly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = dlx + 1, secondYPos = dly - 1 });
-                                    cleaner();
-                                    break;
-                                }
-                                else break;
-                            }
-                        }
                     }
-                    dlx++; dly--;
+                    if (y <= 1 && x <= 1)
+                        if (board[x + 1, y + 1].Image == whitesh.Image || board[x + 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+
+                    if (y >= 6 && x <= 1)
+                        if (board[x + 1, y - 1].Image == whitesh.Image || board[x + 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                    if (y <= 1 && x >= 6)
+                        if (board[x - 1, y + 1].Image == whitesh.Image || board[x - 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+                    if (y >= 6 && x >= 6)
+                        if (board[x - 1, y - 1].Image == whitesh.Image || board[x - 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
                 }
-                int drx = x, dry = y;
-                int dranswer = 0;
-                while (drx <= 7 && dry <= 7)
+                if (board[x, y].Image == blackQueen.Image)
                 {
-                    if (board[drx, dry].Image == null) { }
-                    else
+                    int ulx = x, uly = y;
+                    int ulanswer = 0;
+                    while (ulx >= 0 && uly >= 0)
                     {
-                        if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
+                        if (board[ulx, uly].Image == null) { }
+                        else
                         {
-                            if (dry != y && drx != x) break;
-                        }
-                        if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
-                        {
-                            if (drx <= 6 && dry <= 6 & (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image))
+                            if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image)
                             {
-                                if (board[drx + 1, dry + 1].Image == null)
+                                if (uly != y && ulx != x) break;
+                            }
+
+                            if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image)
+                            {
+                                if (ulx >= 1 && uly >= 1)
                                 {
-                                    hods.Add(new AICheckers { ocenka = dranswer + 4 + (blackQueenEatChecker(drx, dry) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = drx + 1, secondYPos = dry + 1 });
-                                    cleaner();
-                                    break;
+                                    if (board[ulx - 1, uly - 1].Image == null & (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image))
+                                    {
+                                        hods.Add(new AICheckers { ocenka = ulanswer + 4 + (blackQueenEatChecker(ulx, uly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = ulx - 1, secondYPos = uly - 1 });
+                                        cleaner();
+                                        break;
+                                    }
+                                    else break;
                                 }
-                                else break;
                             }
                         }
+                        ulx--; uly--;
                     }
-                    drx++; dry++;
+                    int urx = x, ury = y;
+                    int uranswer = 0;
+                    while (urx >= 0 && ury <= 7)
+                    {
+                        if (board[urx, ury].Image == null) { }
+                        else
+                        {
+                            if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
+                            {
+                                if (ury != y && urx != x) break;
+                            }
+                            if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
+                            {
+                                if (urx >= 1 && ury <= 6)
+                                {
+                                    if (board[urx - 1, ury + 1].Image == null & (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image))
+                                    {
+                                        hods.Add(new AICheckers { ocenka = uranswer + 4 + (blackQueenEatChecker(urx, ury) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = urx - 1, secondYPos = ury + 1 });
+                                        cleaner();
+                                        break;
+                                    }
+                                    else break;
+                                }
+                            }
+                        }
+                        urx--; ury++;
+                    }
+
+                    int dlx = x, dly = y;
+                    int dlanswer = 0;
+                    while (dlx <= 7 && dly >= 0)
+                    {
+                        if (board[dlx, dly].Image == null) { }
+                        else
+                        {
+                            if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image)
+                            {
+                                if (dly != y && dlx != x) break;
+                            }
+                            if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
+                            {
+                                if (dlx <= 6 && dly >= 1 & (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image))
+                                {
+                                    if (board[dlx + 1, dly - 1].Image == null)
+                                    {
+                                        hods.Add(new AICheckers { ocenka = dlanswer + 4 + (blackQueenEatChecker(dlx, dly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = dlx + 1, secondYPos = dly - 1 });
+                                        cleaner();
+                                        break;
+                                    }
+                                    else break;
+                                }
+                            }
+                        }
+                        dlx++; dly--;
+                    }
+                    int drx = x, dry = y;
+                    int dranswer = 0;
+                    while (drx <= 7 && dry <= 7)
+                    {
+                        if (board[drx, dry].Image == null) { }
+                        else
+                        {
+                            if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
+                            {
+                                if (dry != y && drx != x) break;
+                            }
+                            if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
+                            {
+                                if (drx <= 6 && dry <= 6 & (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image))
+                                {
+                                    if (board[drx + 1, dry + 1].Image == null)
+                                    {
+                                        hods.Add(new AICheckers { ocenka = dranswer + 4 + (blackQueenEatChecker(drx, dry) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = drx + 1, secondYPos = dry + 1 });
+                                        cleaner();
+                                        break;
+                                    }
+                                    else break;
+                                }
+                            }
+                        }
+                        drx++; dry++;
+                    }
                 }
             }
             for (int i = 0; i < hods.Count; i++)
@@ -706,277 +744,284 @@ namespace Шашечки
         public List<AICheckers> allhods(int x, int y)
         {
             List<AICheckers> hods = new List<AICheckers>();
-
-            if (board[x, y].Image == blacksh.Image)
+            if (colour == "white")
             {
-                if (x > 1 && y > 1 && x < 7 && y < 7)
-                {
-                    if (board[x + 1, y + 1].Image == null)
-                    {
-                        hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
-                        Console.WriteLine("oc = 1+" + (checkIfCantDieINT(x + 1, y + 1, x, y)) + " | " + x + " ; " + y + " | " + (x + 1) + " ; " + (y + 1));
-                    }
-                    if (board[x + 1, y - 1].Image == null)
-                    {
-                        hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
-                        Console.WriteLine("oc = 1+" + (checkIfCantDieINT(x + 1, y - 1, x, y)) + " | " + x + " ; " + y + " | " + (x + 1) + " ; " + (y - 1));
-                    }
+                // мб забить все 32 клетки??
 
-                    if (board[x + 1, y + 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-                    if (board[x + 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-
-                    if (board[x + 1, y - 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-                    if (board[x + 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-
-                    if (board[x - 1, y + 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
-                    if (board[x - 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
-
-                    if (board[x - 1, y - 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
-                    if (board[x - 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
-                }
-                if (x == 1 && y == 1)
-                {
-                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
-                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
-                    if (board[x + 1, y + 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-                    if (board[x + 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-                }
-                if (x <= 1 && y > 1 && y < 7)
-                {
-                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
-                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
-                    if (board[x + 1, y + 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-                    if (board[x + 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-
-                    if (board[x + 1, y - 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-                    if (board[x + 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-                }
-                if (y <= 1 && x > 1 && x < 7)
-                {
-                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
-                    if (board[x + 1, y + 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-                    if (board[x + 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-
-                    if (board[x - 1, y + 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
-                    if (board[x - 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
-                }
-
-                if (y >= 6 && x >= 1 && x <= 7)
-                {
-                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
-                    if (board[x + 1, y - 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-                    if (board[x + 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-
-                    if (board[x - 1, y - 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
-                    if (board[x - 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
-                }
-                if (y <= 1 && x <= 1)
-                {
-                    if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
-                    if (board[x + 1, y + 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-                    if (board[x + 1, y + 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
-                }
-
-                if (y >= 6 && x <= 1)
-                {
-                    if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1,x,y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
-                    if (board[x + 1, y - 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-                    if (board[x + 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
-                }
-                if (y <= 1 && x >= 6)
-                {
-                    if (board[x - 1, y - 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
-                    if (board[x - 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
-                }
-                if (y >= 6 && x >= 6)
-                {
-                    if (board[x - 1, y - 1].Image == whitesh.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
-                    if (board[x - 1, y - 1].Image == whiteQueen.Image)
-                        if (checkIfCanEat(x, y))
-                            hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
-                }
             }
-            if (board[x, y].Image == blackQueen.Image)
+            if (colour == "black")
             {
-                int ulx = x, uly = y;
-                int ulanswer = 0;
-                while (ulx >= 0 && uly >= 0)
+                if (board[x, y].Image == blacksh.Image)
                 {
-                    if (board[ulx, uly].Image == null)
+                    if (x > 1 && y > 1 && x < 7 && y < 7)
                     {
-                        hods.Add(new AICheckers { ocenka = ulanswer + 2, firstXPos = x, firstYPos = y, secondXPos = ulx, secondYPos = uly });
-                    }
-                    else
-                    {
-                        if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image)
+                        if (board[x + 1, y + 1].Image == null)
                         {
-                            if (uly != y && ulx != x) break;
+                            hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                            Console.WriteLine("oc = 1+" + (checkIfCantDieINT(x + 1, y + 1, x, y)) + " | " + x + " ; " + y + " | " + (x + 1) + " ; " + (y + 1));
+                        }
+                        if (board[x + 1, y - 1].Image == null)
+                        {
+                            hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                            Console.WriteLine("oc = 1+" + (checkIfCantDieINT(x + 1, y - 1, x, y)) + " | " + x + " ; " + y + " | " + (x + 1) + " ; " + (y - 1));
                         }
 
-                        if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image)
-                        {
-                            if (ulx >= 1 && uly >= 1)
-                            {
-                                if (board[ulx - 1, uly - 1].Image == null & (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image))
-                                {
-                                    hods.Add(new AICheckers { ocenka = ulanswer + 4 + (board[ulx, uly].Image == whiteQueen.Image ? 1 : 0) + (blackQueenEatChecker(ulx, uly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = ulx - 1, secondYPos = uly - 1 });
-                                    cleaner();
-                                    break;
-                                }
-                            }
-                            else break;
-                        }
+                        if (board[x + 1, y + 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                        if (board[x + 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+
+                        if (board[x + 1, y - 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                        if (board[x + 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+
+                        if (board[x - 1, y + 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+                        if (board[x - 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+
+                        if (board[x - 1, y - 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                        if (board[x - 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
                     }
-                    ulx--; uly--;
+                    if (x == 1 && y == 1)
+                    {
+                        if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                        if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                        if (board[x + 1, y + 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                        if (board[x + 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                    }
+                    if (x <= 1 && y > 1 && y < 7)
+                    {
+                        if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                        if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                        if (board[x + 1, y + 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                        if (board[x + 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+
+                        if (board[x + 1, y - 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                        if (board[x + 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                    }
+                    if (y <= 1 && x > 1 && x < 7)
+                    {
+                        if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x, y, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                        if (board[x + 1, y + 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                        if (board[x + 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+
+                        if (board[x - 1, y + 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+                        if (board[x - 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y + 2 });
+                    }
+
+                    if (y >= 6 && x >= 1 && x <= 7)
+                    {
+                        if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                        if (board[x + 1, y - 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                        if (board[x + 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+
+                        if (board[x - 1, y - 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                        if (board[x - 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                    }
+                    if (y <= 1 && x <= 1)
+                    {
+                        if (board[x + 1, y + 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y + 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y + 1 });
+                        if (board[x + 1, y + 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                        if (board[x + 1, y + 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y + 2 });
+                    }
+
+                    if (y >= 6 && x <= 1)
+                    {
+                        if (board[x + 1, y - 1].Image == null) hods.Add(new AICheckers { ocenka = 1 + (checkIfCantDieINT(x + 1, y - 1, x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 1, secondYPos = y - 1 });
+                        if (board[x + 1, y - 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                        if (board[x + 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x + 2, secondYPos = y - 2 });
+                    }
+                    if (y <= 1 && x >= 6)
+                    {
+                        if (board[x - 1, y - 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                        if (board[x - 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                    }
+                    if (y >= 6 && x >= 6)
+                    {
+                        if (board[x - 1, y - 1].Image == whitesh.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 2 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                        if (board[x - 1, y - 1].Image == whiteQueen.Image)
+                            if (checkIfCanEat(x, y))
+                                hods.Add(new AICheckers { ocenka = 3 + (checkIfCanEatAndCantDie(x, y)), firstXPos = x, firstYPos = y, secondXPos = x - 2, secondYPos = y - 2 });
+                    }
                 }
-                int urx = x, ury = y;
-                int uranswer = 0;
-                while (urx >= 0 && ury <= 7)
+                if (board[x, y].Image == blackQueen.Image)
                 {
-                    if (board[urx, ury].Image == null)
+                    int ulx = x, uly = y;
+                    int ulanswer = 0;
+                    while (ulx >= 0 && uly >= 0)
                     {
-                        hods.Add(new AICheckers { ocenka = uranswer + 2, firstXPos = x, firstYPos = y, secondXPos = urx, secondYPos = ury });
-                    }
-                    else
-                    {
-                        if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
-                            if (ury != y && urx != x) break;
-
-                        if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
+                        if (board[ulx, uly].Image == null)
                         {
-                            if (urx >= 1 && ury <= 6)
+                            hods.Add(new AICheckers { ocenka = ulanswer + 2, firstXPos = x, firstYPos = y, secondXPos = ulx, secondYPos = uly });
+                        }
+                        else
+                        {
+                            if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image)
                             {
-                                if (board[urx - 1, ury + 1].Image == null & (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image))
-                                {
-                                    hods.Add(new AICheckers { ocenka = uranswer + 4 + (board[urx, ury].Image == whiteQueen.Image ? 1 : 0) + (blackQueenEatChecker(urx, ury) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = urx - 1, secondYPos = ury + 1 });
-                                    cleaner();
-                                    break;
-                                }
+                                if (uly != y && ulx != x) break;
                             }
-                            else break;
-                        }
-                    }
-                    urx--; ury++;
-                }
 
-                int dlx = x, dly = y;
-                int dlanswer = 0;
-                while (dlx <= 7 && dly >= 0)
-                {
-                    if (board[dlx, dly].Image == null)
-                    {
-                        hods.Add(new AICheckers { ocenka = dlanswer + 2, firstXPos = x, firstYPos = y, secondXPos = dlx, secondYPos = dly });
-                    }
-                    else
-                    {
-                        if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image)
-                        {
-                            if (dly != y && dlx != x) break;
-                        }
-                        if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
-                        {
-                            if (dlx <= 6 && dly >= 1)
+                            if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image)
                             {
-                                if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
+                                if (ulx >= 1 && uly >= 1)
                                 {
-                                    if (board[dlx + 1, dly - 1].Image == null)
+                                    if (board[ulx - 1, uly - 1].Image == null & (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image))
                                     {
-                                        hods.Add(new AICheckers { ocenka = dlanswer + 4 + (blackQueenEatChecker(dlx, dly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = dlx + 1, secondYPos = dly - 1 });
+                                        hods.Add(new AICheckers { ocenka = ulanswer + 4 + (board[ulx, uly].Image == whiteQueen.Image ? 1 : 0) + (blackQueenEatChecker(ulx, uly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = ulx - 1, secondYPos = uly - 1 });
                                         cleaner();
                                         break;
                                     }
                                 }
+                                else break;
                             }
-                            else break;
                         }
+                        ulx--; uly--;
                     }
-                    dlx++; dly--;
-                }
-                int drx = x, dry = y;
-                int dranswer = 0;
-                while (drx <= 7 && dry <= 7)
-                {
-                    if (board[drx, dry].Image == null)
+                    int urx = x, ury = y;
+                    int uranswer = 0;
+                    while (urx >= 0 && ury <= 7)
                     {
-                        hods.Add(new AICheckers { ocenka = dranswer + 2, firstXPos = x, firstYPos = y, secondXPos = drx, secondYPos = dry });
-                    }
-                    else
-                    {
-                        if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
+                        if (board[urx, ury].Image == null)
                         {
-                            if (dry != y && drx != x) break;
+                            hods.Add(new AICheckers { ocenka = uranswer + 2, firstXPos = x, firstYPos = y, secondXPos = urx, secondYPos = ury });
                         }
-                        if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
+                        else
                         {
-                            if (drx <= 6 && dry <= 6)
-                                if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
-                                    if (board[drx + 1, dry + 1].Image == null)
+                            if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
+                                if (ury != y && urx != x) break;
+
+                            if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
+                            {
+                                if (urx >= 1 && ury <= 6)
+                                {
+                                    if (board[urx - 1, ury + 1].Image == null & (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image))
                                     {
-                                        hods.Add(new AICheckers { ocenka = dranswer + 4 + (board[drx, dry].Image == whiteQueen.Image ? 1 : 0) + (blackQueenEatChecker(drx, dry) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = drx + 1, secondYPos = dry + 1 });
+                                        hods.Add(new AICheckers { ocenka = uranswer + 4 + (board[urx, ury].Image == whiteQueen.Image ? 1 : 0) + (blackQueenEatChecker(urx, ury) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = urx - 1, secondYPos = ury + 1 });
+                                        cleaner();
                                         break;
                                     }
-                                    else break;
+                                }
+                                else break;
+                            }
                         }
+                        urx--; ury++;
                     }
-                    drx++; dry++;
+
+                    int dlx = x, dly = y;
+                    int dlanswer = 0;
+                    while (dlx <= 7 && dly >= 0)
+                    {
+                        if (board[dlx, dly].Image == null)
+                        {
+                            hods.Add(new AICheckers { ocenka = dlanswer + 2, firstXPos = x, firstYPos = y, secondXPos = dlx, secondYPos = dly });
+                        }
+                        else
+                        {
+                            if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image)
+                            {
+                                if (dly != y && dlx != x) break;
+                            }
+                            if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
+                            {
+                                if (dlx <= 6 && dly >= 1)
+                                {
+                                    if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
+                                    {
+                                        if (board[dlx + 1, dly - 1].Image == null)
+                                        {
+                                            hods.Add(new AICheckers { ocenka = dlanswer + 4 + (blackQueenEatChecker(dlx, dly) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = dlx + 1, secondYPos = dly - 1 });
+                                            cleaner();
+                                            break;
+                                        }
+                                    }
+                                }
+                                else break;
+                            }
+                        }
+                        dlx++; dly--;
+                    }
+                    int drx = x, dry = y;
+                    int dranswer = 0;
+                    while (drx <= 7 && dry <= 7)
+                    {
+                        if (board[drx, dry].Image == null)
+                        {
+                            hods.Add(new AICheckers { ocenka = dranswer + 2, firstXPos = x, firstYPos = y, secondXPos = drx, secondYPos = dry });
+                        }
+                        else
+                        {
+                            if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
+                            {
+                                if (dry != y && drx != x) break;
+                            }
+                            if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
+                            {
+                                if (drx <= 6 && dry <= 6)
+                                    if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
+                                        if (board[drx + 1, dry + 1].Image == null)
+                                        {
+                                            hods.Add(new AICheckers { ocenka = dranswer + 4 + (board[drx, dry].Image == whiteQueen.Image ? 1 : 0) + (blackQueenEatChecker(drx, dry) ? 1 : 0), firstXPos = x, firstYPos = y, secondXPos = drx + 1, secondYPos = dry + 1 });
+                                            break;
+                                        }
+                                        else break;
+                            }
+                        }
+                        drx++; dry++;
+                    }
                 }
             }
             for (int i = 0; i < hods.Count; i++)
@@ -1162,138 +1207,140 @@ namespace Шашечки
             return true;
         }
 
-        public int checkIfCantDieINT(int x1, int y1, int x, int y)
+        public int checkIfCantDieINT(int x1, int y1, int x, int y) // поправить!!!
         {
             bool answer = false;
-            bool asn = true;
+            bool death = false;
             int ans = 0;
-            if (x >= 1 && x <= 6 && y >= 1 && y <= 6)
+            if (colour == "black")
             {
-                if ((board[x - 1, y - 1].Image == whiteQueen.Image | board[x - 1, y - 1].Image == whitesh.Image) && board[x + 1, y + 1].Image == board[x, y].Image)
-                    asn = false;
-                if ((board[x - 1, y + 1].Image == whiteQueen.Image | board[x - 1, y + 1].Image == whitesh.Image) && board[x + 1, y - 1].Image == board[x, y].Image)
-                    asn = false;
-                if ((board[x + 1, y - 1].Image == whiteQueen.Image | board[x + 1, y - 1].Image == whitesh.Image) && board[x - 1, y + 1].Image == board[x, y].Image)
-                    asn = false;
-                if ((board[x + 1, y + 1].Image == whiteQueen.Image | board[x + 1, y + 1].Image == whitesh.Image) && board[x - 1, y - 1].Image == board[x, y].Image)
-                    asn = false;
-
-                int ulx = x, uly = y;
-                bool ulanswer = false;
-                while (ulx >= 0 && uly >= 0)
+                if (x >= 1 && x <= 6 && y >= 1 && y <= 6)
                 {
-                    if (board[ulx, uly].Image == null) { }
-                    else
-                    {
-                        if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image)
-                        {
-                            if (uly != y && ulx != x) break;
-                        }
+                    if ((board[x - 1, y - 1].Image == whiteQueen.Image | board[x - 1, y - 1].Image == whitesh.Image) && board[x + 1, y + 1].Image == board[x, y].Image)
+                        death = true;
+                    if ((board[x - 1, y + 1].Image == whiteQueen.Image | board[x - 1, y + 1].Image == whitesh.Image) && board[x + 1, y - 1].Image == board[x, y].Image)
+                        death = true;
+                    if ((board[x + 1, y - 1].Image == whiteQueen.Image | board[x + 1, y - 1].Image == whitesh.Image) && board[x - 1, y + 1].Image == board[x, y].Image)
+                        death = true;
+                    if ((board[x + 1, y + 1].Image == whiteQueen.Image | board[x + 1, y + 1].Image == whitesh.Image) && board[x - 1, y - 1].Image == board[x, y].Image)
+                        death = true;
 
-                        if (board[ulx, uly].Image == whiteQueen.Image || board[ulx, uly].Image == whitesh.Image)
+                    int ulx = x, uly = y;
+                    bool ulanswer = false;
+                    while (ulx >= 0 && uly >= 0)
+                    {
+                        if (board[ulx, uly].Image == null) { }
+                        else
                         {
-                            if (ulx >= 1 && uly >= 1)
+                            if (board[ulx, uly].Image == blackQueen.Image || board[ulx, uly].Image == blacksh.Image)
                             {
-                                if (board[x + 1, y + 1].Image == null)
+                                if (uly != y && ulx != x) break;
+                            }
+
+                            if (board[ulx, uly].Image == whiteQueen.Image)
+                            {
+                                if (ulx >= 1 && uly >= 1)
                                 {
-                                    ulanswer = true;
-                                    break;
+                                    if (board[x + 1, y + 1].Image == null)
+                                    {
+                                        death = true;
+                                        break;
+                                    }
+                                    else break;
                                 }
-                                else break;
                             }
                         }
+                        ulx--; uly--;
                     }
-                    ulx--; uly--;
-                }
-                int urx = x, ury = y;
-                bool uranswer = false;
-                while (urx >= 0 && ury <= 7)
-                {
-                    if (board[urx, ury].Image == null) { }
-                    else
+                    int urx = x, ury = y;
+                    bool uranswer = false;
+                    while (urx >= 0 && ury <= 7)
                     {
-                        if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
+                        if (board[urx, ury].Image == null) { }
+                        else
                         {
-                            if (ury != y && urx != x) break;
-                        }
-                        if (board[urx, ury].Image == whiteQueen.Image || board[urx, ury].Image == whitesh.Image)
-                        {
-                            if (urx >= 1 && ury <= 6)
+                            if (board[urx, ury].Image == blackQueen.Image || board[urx, ury].Image == blacksh.Image)
                             {
-                                if (board[x + 1, y - 1].Image == null)
+                                if (ury != y && urx != x) break;
+                            }
+                            if (board[urx, ury].Image == whiteQueen.Image)
+                            {
+                                if (urx >= 1 && ury <= 6)
                                 {
-                                    uranswer = true;
-                                    break;
+                                    if (board[x + 1, y - 1].Image == null)
+                                    {
+                                        death = true;
+                                        break;
+                                    }
+                                    else break;
                                 }
-                                else break;
                             }
                         }
+                        urx--; ury++;
                     }
-                    urx--; ury++;
-                }
 
-                int dlx = x, dly = y;
-                bool dlanswer = false;
-                while (dlx <= 7 && dly >= 0)
-                {
-                    if (board[dlx, dly].Image == null) { }
-                    else
+                    int dlx = x, dly = y;
+                    bool dlanswer = false;
+                    while (dlx <= 7 && dly >= 0)
                     {
-                        if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image)
+                        if (board[dlx, dly].Image == null) { }
+                        else
                         {
-                            if (dly != y && dlx != x) break;
-                        }
-                        if (board[dlx, dly].Image == whiteQueen.Image || board[dlx, dly].Image == whitesh.Image)
-                        {
-                            if (dlx <= 6 && dly >= 1)
+                            if (board[dlx, dly].Image == blackQueen.Image || board[dlx, dly].Image == blacksh.Image)
                             {
-                                if (board[x - 1, y + 1].Image == null)
+                                if (dly != y && dlx != x) break;
+                            }
+                            if (board[dlx, dly].Image == whiteQueen.Image)
+                            {
+                                if (dlx <= 6 && dly >= 1)
                                 {
-                                    dlanswer = true;
-                                    break;
+                                    if (board[x - 1, y + 1].Image == null)
+                                    {
+                                        death = true;
+                                        break;
+                                    }
+                                    else break;
                                 }
-                                else break;
                             }
                         }
+                        dlx++; dly--;
                     }
-                    dlx++; dly--;
-                }
-                int drx = x, dry = y;
-                bool dranswer = false;
-                while (drx <= 7 && dry <= 7)
-                {
-                    if (board[drx, dry].Image == null) { }
-                    else
+                    int drx = x, dry = y;
+                    bool dranswer = false;
+                    while (drx <= 7 && dry <= 7)
                     {
-                        if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
+                        if (board[drx, dry].Image == null) { }
+                        else
                         {
-                            if (dry != y && drx != x) break;
-                        }
-                        if (board[drx, dry].Image == whiteQueen.Image || board[drx, dry].Image == whitesh.Image)
-                        {
-                            if (drx <= 6 && dry <= 6)
+                            if (board[drx, dry].Image == blackQueen.Image || board[drx, dry].Image == blacksh.Image)
                             {
-                                if (board[x - 1, y - 1].Image == null)
+                                if (dry != y && drx != x) break;
+                            }
+                            if (board[drx, dry].Image == whiteQueen.Image)
+                            {
+                                if (drx <= 6 && dry <= 6)
                                 {
-                                    dranswer = true;
-                                    break;
+                                    if (board[x - 1, y - 1].Image == null)
+                                    {
+                                        death = true;
+                                        break;
+                                    }
+                                    else break;
                                 }
-                                else break;
                             }
                         }
+                        drx++; dry++;
                     }
-                    drx++; dry++;
-                }
 
-                answer = !(ulanswer | uranswer | dlanswer | dranswer);
+                    answer = !(ulanswer | uranswer | dlanswer | dranswer);
+                }
+                else death = false;
             }
-            else asn = true;
+            
 
-            Console.WriteLine("death = "+ asn);
-            //if (!asn)
-            //    asn = answer;
+            Console.WriteLine("death = "+ death);
 
-            return asn ? 1: -1;/* && !answer ? -1 : asn ? 1: 0*/
+            return death ? -1 : 1;
         }
 
         public int checkIfCanEatAndCantDie(int x, int y)
