@@ -19,18 +19,22 @@ namespace Шашечки
 
         private void starter_Click(object sender, EventArgs e)
         {
-            String type = "";
-            if (mem.Checked)
-            {
-                type = "mem";
-            }
-            if (mec.Checked)
-            {
-                type = "mec";
-            }
-            //this.Close();
-            var game = new Form1(type);
+            String type = mec.Checked | plblack.Checked | plwhite.Checked ? "mec" : mem.Checked ? "mem" : "";
+            string col = plblack.Checked ? "white" : plblack.Checked ? "black" : "";
+            var game = new Form1(type, col);
             game.Show();
+        }
+
+        private void mec_CheckedChanged(object sender, EventArgs e)
+        {
+            plwhite.Enabled = true;
+            plblack.Enabled = true;
+        }
+
+        private void mem_CheckedChanged(object sender, EventArgs e)
+        {
+            plwhite.Enabled = false;
+            plblack.Enabled = false;
         }
     }
 }

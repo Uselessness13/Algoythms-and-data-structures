@@ -25,8 +25,10 @@ namespace Шашечки
         private Random random = new Random();
         TcpClient client;
         string colour = "black";
-        public Form1(String player)
+        bool f = true;
+        public Form1(String player, string col)
         {
+            colour = col == "" ? colour : col;
             type = player;
             InitializeComponent();
         }
@@ -184,8 +186,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
-                            numberOfStep++;
+                            history.Text += player + "\n" + hod[current[1]].ToString() + (current[1] - 1).ToString() + " -> " + hod[y].ToString() + (x).ToString() + "\n"; numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
                         }
@@ -203,8 +204,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
-                            numberOfStep++;
+                            history.Text += player + "\n" + hod[current[1]].ToString() + (current[1] - 1).ToString() + " -> " + hod[y].ToString() + (x).ToString() + "\n"; numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
                         }
@@ -222,8 +222,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
-                            numberOfStep++;
+                            history.Text += player + "\n" + hod[current[1]].ToString() + (current[1] - 1).ToString() + " -> " + hod[y].ToString() + (x).ToString() + "\n"; numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
                         }
@@ -241,8 +240,7 @@ namespace Шашечки
                         else
                         {
                             cleaner();
-                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
-                            numberOfStep++;
+                            history.Text += player + "\n" + hod[current[1]].ToString() + (current[1] - 1).ToString() + " -> " + hod[y].ToString() + (x).ToString() + "\n"; numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
                         }
@@ -260,88 +258,178 @@ namespace Шашечки
                 int whsch = whiteAte;
                 whiteScore.Text = whiteAte.ToString();
                 blackScore.Text = blackAte.ToString();
-                if (board[x, y].Image == whitesh.Image | board[x, y].Image == blacksh.Image | board[x, y].Image == whiteQueen.Image | board[x, y].Image == blackQueen.Image)
+                if (colour == "black")
                 {
-                    whiteScore.Text = whiteAte.ToString();
-                    blackScore.Text = blackAte.ToString();
-                    player = numberOfStep % 2 != 0 ? "white" : "black";
-                    playersname.Text = player + " turn";
-
-                    if (player == "white" && board[x, y].Image == whitesh.Image)
-                    {
-                        cleaner();
-                        current = new int[] { x, y };
-                        whiteHighlighter(x, y);
-                        whiteScore.Text = whiteAte.ToString();
-                        blackScore.Text = blackAte.ToString();
-                    }
-                    if (player == "white" && board[x, y].Image == whiteQueen.Image)
-                    {
-                        cleaner();
-                        current = new int[] { x, y };
-                        whiteQueenHighlither(x, y);
-                        whiteScore.Text = whiteAte.ToString();
-                        blackScore.Text = blackAte.ToString();
-                    }
-                }
-
-                if (board[x, y].BackgroundImage == highlight.Image)
-                {
-                    if (board[current[0], current[1]].Image == whitesh.Image)
+                    if (board[x, y].Image == whitesh.Image | board[x, y].Image == blacksh.Image | board[x, y].Image == whiteQueen.Image | board[x, y].Image == blackQueen.Image)
                     {
                         whiteScore.Text = whiteAte.ToString();
                         blackScore.Text = blackAte.ToString();
-                        cleaner();
-                        whiteStepper(current[0], current[1], x, y);
-                        if (whiteEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && whiteAte > whsch)
-                        {
-                            current = new int[] { x, y };
-                        }
-                        else
-                        {
-                            cleaner();
-                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
-                            numberOfStep++;
-                            player = numberOfStep % 2 != 0 ? "white" : "black";
-                            playersname.Text = player + " turn";
-                        }
-                        if (!checkForHighlith())
-                            analyser();
-                    }
-                    if (board[current[0], current[1]].Image == whitesh.Image && x == 0)
-                    {
-                        whiteScore.Text = whiteAte.ToString();
-                        blackScore.Text = blackAte.ToString();
-                        cleaner();
-                        whiteStepper(current[0], current[1], x, y);
-                        cleaner();
-                        history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
-                        numberOfStep++;
                         player = numberOfStep % 2 != 0 ? "white" : "black";
                         playersname.Text = player + " turn";
-                        if (!checkForHighlith())
-                            analyser();
+
+                        if (player == "white" && board[x, y].Image == whitesh.Image)
+                        {
+                            cleaner();
+                            current = new int[] { x, y };
+                            whiteHighlighter(x, y);
+                            whiteScore.Text = whiteAte.ToString();
+                            blackScore.Text = blackAte.ToString();
+                        }
+                        if (player == "white" && board[x, y].Image == whiteQueen.Image)
+                        {
+                            cleaner();
+                            current = new int[] { x, y };
+                            whiteQueenHighlither(x, y);
+                            whiteScore.Text = whiteAte.ToString();
+                            blackScore.Text = blackAte.ToString();
+                        }
                     }
-                    if (board[current[0], current[1]].Image == whiteQueen.Image)
+
+                    if (board[x, y].BackgroundImage == highlight.Image)
+                    {
+                        if (board[current[0], current[1]].Image == whitesh.Image)
+                        {
+                            whiteScore.Text = whiteAte.ToString();
+                            blackScore.Text = blackAte.ToString();
+                            cleaner();
+                            whiteStepper(current[0], current[1], x, y);
+                            if (whiteEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && whiteAte > whsch)
+                            {
+                                current = new int[] { x, y };
+                            }
+                            else
+                            {
+                                cleaner();
+                                history.Text += player + "\n" + hod[current[1]].ToString() + (current[1] - 1).ToString() + " -> " + hod[y].ToString() + (x).ToString() + "\n"; numberOfStep++;
+                                player = numberOfStep % 2 != 0 ? "white" : "black";
+                                playersname.Text = player + " turn";
+                            }
+                            if (!checkForHighlith())
+                                analyser();
+                        }
+                        if (board[current[0], current[1]].Image == whitesh.Image && x == 0)
+                        {
+                            whiteScore.Text = whiteAte.ToString();
+                            blackScore.Text = blackAte.ToString();
+                            cleaner();
+                            whiteStepper(current[0], current[1], x, y);
+                            cleaner();
+                            history.Text += player + "\n" + hod[current[1]].ToString() + (current[1] - 1).ToString() + " -> " + hod[y].ToString() + (x).ToString() + "\n"; numberOfStep++;
+                            player = numberOfStep % 2 != 0 ? "white" : "black";
+                            playersname.Text = player + " turn";
+                            if (!checkForHighlith())
+                                analyser();
+                        }
+                        if (board[current[0], current[1]].Image == whiteQueen.Image)
+                        {
+                            whiteScore.Text = whiteAte.ToString();
+                            blackScore.Text = blackAte.ToString();
+                            cleaner();
+                            whiteQueenStepper(current[0], current[1], x, y);
+                            if ((whiteQueenEatChecker(x, y) && whiteAte > whsch))
+                            {
+                                current = new int[] { x, y };
+                            }
+                            else
+                            {
+                                cleaner();
+                                history.Text += player + "\n" + hod[current[1]].ToString() + (current[1] - 1).ToString() + " -> " + hod[y].ToString() + (x).ToString() + "\n"; numberOfStep++;
+                                player = numberOfStep % 2 != 0 ? "white" : "black";
+                                playersname.Text = player + " turn";
+                            }
+                            if (!checkForHighlith())
+                                analyser();
+                        }
+                    }
+                }
+                if (colour == "white")
+                {
+                    if (f)
+                    {
+                        analyser();
+                        f = false;
+                    }
+                    if (board[x, y].Image == whitesh.Image | board[x, y].Image == blacksh.Image | board[x, y].Image == whiteQueen.Image | board[x, y].Image == blackQueen.Image)
                     {
                         whiteScore.Text = whiteAte.ToString();
                         blackScore.Text = blackAte.ToString();
-                        cleaner();
-                        whiteQueenStepper(current[0], current[1], x, y);
-                        if ((whiteQueenEatChecker(x, y) && whiteAte > whsch))
-                        {
-                            current = new int[] { x, y };
-                        }
-                        else
+                        player = numberOfStep % 2 != 0 ? "white" : "black";
+                        playersname.Text = player + " turn";
+
+                        if (player == "black" && board[x, y].Image == blacksh.Image)
                         {
                             cleaner();
-                            history.Text += hod[x].ToString() + (current[1] - 1).ToString() + " -> " + hod[current[0]].ToString() + (y - 1).ToString() + "\n";
-                            numberOfStep++;
+                            current = new int[] { x, y };
+                            blackHighlighter(x, y);
+                            whiteScore.Text = whiteAte.ToString();
+                            blackScore.Text = blackAte.ToString();
+                        }
+                        if (player == "black" && board[x, y].Image == blackQueen.Image)
+                        {
+                            cleaner();
+                            current = new int[] { x, y };
+                            blackQueenHighlither(x, y);
+                            whiteScore.Text = whiteAte.ToString();
+                            blackScore.Text = blackAte.ToString();
+                        }
+                    }
+
+                    if (board[x, y].BackgroundImage == highlight.Image)
+                    {
+                        if (board[current[0], current[1]].Image == whitesh.Image)
+                        {
+                            whiteScore.Text = whiteAte.ToString();
+                            blackScore.Text = blackAte.ToString();
+                            cleaner();
+                            whiteStepper(current[0], current[1], x, y);
+                            if (blackEatChecker(x, y) && Math.Abs(current[0] - x) >= 2 && blackAte > blsch)
+                            {
+                                current = new int[] { x, y };
+                            }
+                            else
+                            {
+                                cleaner();
+                                history.Text += player + "\n" + hod[current[1]].ToString() + (current[1] - 1).ToString() + " -> " + hod[y].ToString() + (x).ToString() + "\n"; numberOfStep++;
+                                player = numberOfStep % 2 != 0 ? "white" : "black";
+                                playersname.Text = player + " turn";
+                            }
+                            if (!checkForHighlith())
+                                analyser();
+                        }
+                        if (board[current[0], current[1]].Image == blacksh.Image && x == 7)
+                        {
+                            whiteScore.Text = whiteAte.ToString();
+                            blackScore.Text = blackAte.ToString();
+                            cleaner();
+                            blackStepper(current[0], current[1], x, y);
+                            cleaner();
+                            history.Text += player + "\n" + hod[current[1]].ToString() + (current[1] - 1).ToString() + " -> " + hod[y].ToString() + (x).ToString() + "\n"; numberOfStep++;
                             player = numberOfStep % 2 != 0 ? "white" : "black";
                             playersname.Text = player + " turn";
+                            if (!checkForHighlith())
+                                analyser();
                         }
-                        if (!checkForHighlith())
-                            analyser();
+                        if (board[current[0], current[1]].Image == blackQueen.Image)
+                        {
+                            whiteScore.Text = whiteAte.ToString();
+                            blackScore.Text = blackAte.ToString();
+                            cleaner();
+                            blackQueenStepper(current[0], current[1], x, y);
+                            if ((blackQueenEatChecker(x, y) && blackAte > blsch))
+                            {
+                                current = new int[] { x, y };
+                            }
+                            else
+                            {
+                                cleaner();
+                                history.Text += player + "\n" + hod[current[1]].ToString() + (current[1] - 1).ToString() + " -> " + hod[y].ToString() + (x).ToString() + "\n"; numberOfStep++;
+                                numberOfStep++;
+                                player = numberOfStep % 2 != 0 ? "white" : "black";
+                                playersname.Text = player + " turn";
+                            }
+                            if (!checkForHighlith())
+                                analyser();
+                        }
                     }
                 }
             }
@@ -402,8 +490,7 @@ namespace Шашечки
                     Console.Write(" curate\n");
                     int r = random.Next(all.Count);
                     makestep(all[r].firstXPos, all[r].firstYPos, all[r].secondXPos, all[r].secondYPos);
-
-                    history.Text += hod[all[r].firstXPos].ToString() + (all[r].firstYPos - 1).ToString() + " -> " + hod[all[r].secondXPos].ToString() + (all[r].secondYPos - 1).ToString() + "\n";
+                    history.Text += player + "\n" + hod[all[r].firstYPos].ToString() + (all[r].firstXPos - 1).ToString() + " -> " + hod[all[r].secondYPos].ToString() + (all[r].secondXPos).ToString() + "\n";
                     Console.WriteLine("MADE STEP");
                     Console.WriteLine(all[r].ocenka + " | " + all[r].firstXPos + " ; " + all[r].firstYPos + " | " + all[r].secondXPos + " ; " + all[r].secondYPos);
                     if (curate - blackAte == 0 || !checkIfCanEat(all[r].secondXPos, all[r].secondYPos))
@@ -428,6 +515,7 @@ namespace Шашечки
                             r = random.Next(hodik.Count);
                             Console.WriteLine("after sorting");
                             makestep(hodik[r].firstXPos, hodik[r].firstYPos, hodik[r].secondXPos, hodik[r].secondYPos);
+                            history.Text += player + "\n" + hodik[all[r].firstXPos].ToString() + (hodik[r].firstYPos - 1).ToString() + " -> " + hod[hodik[r].secondYPos].ToString() + (hodik[r].secondXPos).ToString() + "\n";
                             foreach (AICheckers h in hodik)
                                 Console.WriteLine(h.ocenka + " | " + h.firstXPos + " ; " + h.firstYPos + " | " + h.secondXPos + " ; " + h.secondYPos);
                             if (hodik[r].secondXPos == 7 & wp) break;
@@ -460,7 +548,7 @@ namespace Шашечки
                     int r = random.Next(moves.Count);
                     makestep(moves[r].firstXPos, moves[r].firstYPos, moves[r].secondXPos, moves[r].secondYPos);
 
-                    history.Text += hod[moves[r].firstXPos].ToString() + (moves[r].firstYPos - 1).ToString() + " -> " + hod[moves[r].secondXPos].ToString() + (moves[r].secondYPos - 1).ToString() + "\n";
+                    history.Text += player + "\n" + hod[moves[r].firstXPos].ToString() + (moves[r].firstYPos - 1).ToString() + " -> " + hod[moves[r].secondYPos].ToString() + (moves[r].secondXPos).ToString() + "\n";
                     Console.WriteLine("MADE STEP");
 
                     if (curate - whiteAte == 0 || !checkIfCanEat(moves[r].secondXPos, moves[r].secondYPos))
@@ -485,6 +573,8 @@ namespace Шашечки
                             r = random.Next(hodik.Count);
                             Console.WriteLine("after sorting");
                             makestep(hodik[r].firstXPos, hodik[r].firstYPos, hodik[r].secondXPos, hodik[r].secondYPos);
+                            history.Text += player + "\n" + hod[hodik[r].firstXPos].ToString() + (hodik[r].firstYPos - 1).ToString() + " -> " + hod[hodik[r].secondYPos].ToString() + (hodik[r].secondXPos).ToString() + "\n";
+
                             foreach (AICheckers h in hodik)
                                 Console.WriteLine(h.ocenka + " | " + h.firstXPos + " ; " + h.firstYPos + " | " + h.secondXPos + " ; " + h.secondYPos);
                             if (hodik[r].secondXPos == 0 & wp) break;
@@ -3135,7 +3225,6 @@ namespace Шашечки
         public void convertToBoard(string pole1)
         {
             string pole = rs(pole1);
-            history.Text += pole + "\n";
             if (pole1 != "")
                 for (int i = 0; i < pole.Length; i++)
                     board[i / 8, i % 8].Image = pole[i] == '1' ? whitesh.Image : pole[i] == '2' ? blacksh.Image : pole[i] == '3' ? whiteQueen.Image : pole[i] == '4' ? blackQueen.Image : null;
@@ -3154,7 +3243,7 @@ namespace Шашечки
             }
             catch (SocketException s)
             {
-                history.Text += "Error with connection\n" + s.Message;
+                Console.WriteLine("Error with connection\n" + s.Message);
                 net();
             }
 
@@ -3162,7 +3251,7 @@ namespace Шашечки
             {
                 if (client.Connected)
                 {
-                    history.Text += "connected\n";
+                    Console.WriteLine("connected\n");
 
                     NetworkStream stream = client.GetStream();
 
@@ -3175,7 +3264,7 @@ namespace Шашечки
                     stream.Flush();
                     counter = client.GetStream().Read(d, 0, d.Length);
                     response = Encoding.ASCII.GetString(d);
-                    history.Text += "response\n" + response + "\n;";
+                    Console.WriteLine("response\n" + response + "\n;");
 
                     if (response == "BAD\r\n\r\n")
                     {
@@ -3203,9 +3292,8 @@ namespace Шашечки
             catch (Exception c)
             {
                 Console.WriteLine("косяк\n" + c.Message + "\n");
-                history.Text += "косяк\n" + c.Message + "\n";
             }
-            finally { history.Text += "\ntick\n"; }
+            finally { Console.WriteLine("\ntick\n"); }
         }
         public static string rs(string s)
         {
