@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace Шашечки
 {
-    public partial class Form1 : Form
+    public partial class Checkers : Form
     {
         PictureBox[,] board = new PictureBox[8, 8];
         private int numberOfStep = 1;
@@ -26,7 +26,7 @@ namespace Шашечки
         TcpClient client;
         string colour = "black";
         bool f = true;
-        public Form1(String player, string col)
+        public Checkers(String player, string col)
         {
             colour = col == "" ? colour : col;
             type = player;
@@ -3255,7 +3255,7 @@ namespace Шашечки
 
                     NetworkStream stream = client.GetStream();
 
-                    string colur = colour+"\r\n\r\n";
+                    string colur = colour+"M&M's\r\n\r\n";
                     stream.Write(Encoding.ASCII.GetBytes(colur), 0, Encoding.ASCII.GetBytes(colur).Length);
 
                     string response = "";

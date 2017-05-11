@@ -1,6 +1,6 @@
 ﻿namespace Шашечки
 {
-    partial class Form1
+    partial class Checkers
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Checkers));
             this.history = new System.Windows.Forms.RichTextBox();
             this.whiteQueen = new System.Windows.Forms.PictureBox();
             this.blackQueen = new System.Windows.Forms.PictureBox();

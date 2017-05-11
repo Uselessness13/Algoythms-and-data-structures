@@ -21,7 +21,7 @@ namespace Шашечки
         {
             String type = mec.Checked | plblack.Checked | plwhite.Checked ? "mec" : mem.Checked ? "mem" : "";
             string col = plblack.Checked ? "white" : plblack.Checked ? "black" : "";
-            var game = new Form1(type, col);
+            var game = new Checkers(type, col);
             game.Show();
         }
 
